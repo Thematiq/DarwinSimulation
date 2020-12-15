@@ -50,6 +50,19 @@ public enum Orientation {
         };
     }
 
+    public Vector getUnitVector() {
+        return switch(this) {
+            case NORTH -> new Vector(0, -1);
+            case NORTHEAST -> new Vector(1, -1);
+            case EAST -> new Vector(1, 0);
+            case SOUTHEAST -> new Vector(1, 1);
+            case SOUTH -> new Vector(0, 1);
+            case SOUTHWEST -> new Vector(-1, 1);
+            case WEST -> new Vector(-1, 0);
+            case NORTHWEST -> new Vector(-1, -1);
+        };
+    }
+
     public static Orientation translateOrient(Orientation x, Orientation y) {
         return getOrient(x.getInt() + y .getInt());
     }

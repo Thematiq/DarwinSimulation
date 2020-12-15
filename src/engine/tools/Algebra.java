@@ -1,9 +1,20 @@
 package engine.tools;
 
+/**
+ * Various static tools used in different places inside the project
+ *
+ * @author Mateusz Praski
+ */
 public class Algebra {
+    /** Transform Vector by a angle clockwise
+     *
+     * @param pos Vector from (0,0) to the bottom left
+     * @param degree angle in degrees
+     * @param centerVec Vector from the bottom left to the middle of the object
+     * @return new Vector transformed by a degree clockwise
+     */
     public static Vector rotateVector(Vector pos, double degree, Vector centerVec) {
         pos = pos.add(centerVec);
-        // Using rotation matrix equation
         double radians = Math.toRadians(degree);
         return new Vector(
                 (int)(pos.x * Math.cos(radians) + pos.y * Math.sin(radians)),

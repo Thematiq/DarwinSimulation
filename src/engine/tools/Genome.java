@@ -29,6 +29,7 @@ public class Genome {
         for (int i = 8; i < Genome.GENOME_SIZE; ++i) {
             this.code[i] = r.nextInt(8);
         }
+        this.repairGenome();
         Arrays.sort(this.code);
     }
 
@@ -38,12 +39,12 @@ public class Genome {
                 0, 0, 0, GENOME_SIZE
         };
 
-        cuts[1] = r.nextInt(GENOME_SIZE);
-        cuts[2] = 1 + cuts[1] + r.nextInt(GENOME_SIZE - cuts[1] - 1);
+        cuts[1] = r.nextInt(GENOME_SIZE-2);
+        cuts[2] = 1 + cuts[1] + r.nextInt(GENOME_SIZE - cuts[1]-1);
         // Take 2 sequences from father
         int motherSequence = r.nextInt(3);
-        for (int i = 0; i < 4; ++i) {
-            for (int pos = cuts[i]; pos < cuts[i+1]; ++i) {
+        for (int i = 0; i < 2; ++i) {
+            for (int pos = cuts[i]; pos < cuts[i+1]; ++pos) {
                 if (motherSequence == i) {
                     this.code[pos] = mother.code[pos];
                 } else {
@@ -51,6 +52,7 @@ public class Genome {
                 }
             }
         }
+        this.repairGenome();
         Arrays.sort(this.code);
     }
 
@@ -83,5 +85,14 @@ public class Genome {
 
     public Orientation getRotation() {
         return Orientation.getOrient(this.code[r.nextInt(GENOME_SIZE)]);
+    }
+
+    @Override
+    public String toString() {
+        String ans = "";
+        for(int c : code) {
+            ans += " " + String.valueOf(c);
+        }
+        return ans;
     }
 }
