@@ -63,7 +63,7 @@
         </AnchorPane>
         <ScrollPane minHeight="640.0" minWidth="640.0" prefHeight="-1.0" prefWidth="-1.0">
                <content>
-                  <Canvas height="640.0" width="640.0" />
+                  <Canvas fx:id="canvasSim" height="640.0" width="640.0" />
                </content>
         </ScrollPane>
         <AnchorPane>

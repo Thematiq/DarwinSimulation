@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -16,6 +17,8 @@ public class Main extends Application {
         Controller controller = loader.getController();
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Darwin Simulator");
+        primaryStage.getIcons().add(new Image("file:resources/icon.png"));
         primaryStage.show();
     }
 
