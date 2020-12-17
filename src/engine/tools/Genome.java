@@ -1,14 +1,12 @@
 package engine.tools;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Genome {
     public static final int GENOME_SIZE = 32;
     Random r = new Random();
     int[] code;
+    int[] codePopularity;
 
     public Genome(int[] code) {
         if (code.length != GENOME_SIZE) {
@@ -19,6 +17,7 @@ public class Genome {
         }
         this.code = code;
         Arrays.sort(this.code);
+        this.calculatePopularity();
     }
 
     public Genome() {
@@ -31,6 +30,7 @@ public class Genome {
         }
         this.repairGenome();
         Arrays.sort(this.code);
+        this.calculatePopularity();
     }
 
     public Genome(Genome father, Genome mother) {
@@ -54,6 +54,14 @@ public class Genome {
         }
         this.repairGenome();
         Arrays.sort(this.code);
+        this.calculatePopularity();
+    }
+
+    void calculatePopularity() {
+        this.codePopularity = new int[8];
+        for(int i = 0; i < GENOME_SIZE; ++i) {
+            this.codePopularity[this.code[i]]++;
+        }
     }
 
     static boolean checkGenome(int[] code) {
@@ -94,5 +102,9 @@ public class Genome {
             ans += " " + String.valueOf(c);
         }
         return ans;
+    }
+
+    public int[] getCodePopularity() {
+        return this.codePopularity;
     }
 }

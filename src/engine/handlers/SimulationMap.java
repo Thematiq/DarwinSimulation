@@ -3,6 +3,9 @@ package engine.handlers;
 import engine.objects.Animal;
 import engine.objects.Grass;
 import engine.objects.Herd;
+import engine.observers.IObserverKilled;
+import engine.observers.IObserverPositionChanged;
+import engine.tools.Generators;
 import engine.tools.Parameters;
 import engine.tools.Vector;
 
@@ -106,7 +109,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         }
         Vector pos;
         do {
-            pos = Vector.randomVector(this.rand, this.bottomLeft, this.topRight);
+            pos = Generators.randomVector(this.rand, this.bottomLeft, this.topRight);
         } while(this.bushes.get(pos) != null || this.isJungle(pos));
         return new Grass(pos);
     }
@@ -121,7 +124,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         }
         Vector pos;
         do {
-            pos = Vector.randomVector(this.rand, this.jungleBottomLeft, this.jungleTopRight);
+            pos = Generators.randomVector(this.rand, this.jungleBottomLeft, this.jungleTopRight);
         } while(this.bushes.get(pos) != null);
         return new Grass(pos);
     }
@@ -172,7 +175,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     public void spawnAnimal() {
         Vector pos;
         do {
-            pos = Vector.randomVector(this.rand, this.bottomLeft, this.topRight);
+            pos = Generators.randomVector(this.rand, this.bottomLeft, this.topRight);
         } while(this.herdsTable[pos.x][pos.y].getAnimal() != null);
         this.addAnimal(new Animal(pos, this.params));
     }
@@ -192,6 +195,8 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     public int getGrassAmount() {
         return this.jungleBushes + this.steppeBushes;
     }
+
+    public int getDeadAnimals() { return this.deadAnimals; }
 
     /**
      * @param pos Desired position

@@ -1,4 +1,4 @@
-package engine.handlers;
+package engine.observers;
 
 import engine.objects.Animal;
 

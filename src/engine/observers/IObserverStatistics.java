@@ -1,7 +1,7 @@
-package engine.handlers;
+package engine.observers;
 
 import engine.objects.Animal;
 
 public interface IObserverStatistics {
-    void update(Animal a);
+    void update();
 }

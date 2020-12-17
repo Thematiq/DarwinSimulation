@@ -1,6 +1,7 @@
 package engine.handlers;
 
 import engine.objects.Animal;
+import engine.observers.IObserverNewDay;
 import engine.tools.Parameters;
 import engine.tools.Vector;
 
@@ -87,13 +88,13 @@ public class Simulation {
         return this.map.getLivingAnimals();
     }
 
-    public Object objectAt(Vector pos) {
-        return this.map.objectAt(pos);
+    public int getVegetation() {
+        return this.map.getGrassAmount();
     }
 
-    public boolean isJungle(Vector pos) {
-        return this.map.isJungle(pos);
-    }
+    public int getGraveyard() { return this.map.getDeadAnimals(); }
+
+    public List<Animal> getAnimalList() { return this.map.getAnimalList(); }
 
     /**
      * @param pos Position at the map
@@ -116,9 +117,5 @@ public class Simulation {
      */
     public int[] jungleSize() {
         return this.map.jungleSize();
-    }
-
-    public int getVegetation() {
-        return this.map.getGrassAmount();
     }
 }

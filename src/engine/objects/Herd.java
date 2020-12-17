@@ -1,9 +1,7 @@
 package engine.objects;
 
-import engine.handlers.IObserverKilled;
-import engine.handlers.IObserverPositionChanged;
+import engine.observers.IObserverKilled;
 import engine.tools.Parameters;
-import engine.tools.Vector;
 
 import java.util.*;
 

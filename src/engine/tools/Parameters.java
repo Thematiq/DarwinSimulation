@@ -10,7 +10,7 @@ public class Parameters {
     public final int startingAnimals;
 
     public Parameters() {
-        this(10, 10, 50, 2, 10, (float)0.5, 10);
+        this(100, 100, 50, 2, 10, (float)0.5, 10);
     }
 
     public Parameters(int width, int height, int startEnergy, int moveEnergy, int plantEnergy, float jungleRatio, int startingAnimals) {
@@ -28,4 +28,11 @@ public class Parameters {
 
     }
     */
+
+    @Override
+    public String toString() {
+        return "Map: " + this.width + "x" + this.height + "\n" +
+                "Energy: " + this.startEnergy + "/" + this.moveEnergy + "/" + this.plantEnergy + "\n" +
+                "Jungle ratio: " + this.jungleRatio + ", Starting animals: " + this.startingAnimals;
+    }
 }

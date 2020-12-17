@@ -1,7 +1,7 @@
 package engine.objects;
 
-import engine.handlers.IObserverKilled;
-import engine.handlers.IObserverPositionChanged;
+import engine.observers.IObserverKilled;
+import engine.observers.IObserverPositionChanged;
 import engine.tools.Genome;
 import engine.tools.Orientation;
 import engine.tools.Parameters;
@@ -13,6 +13,7 @@ import java.util.List;
 public class Animal {
     final Parameters params;
     int energy = 0;
+    int days = 0;
     Vector pos;
     Genome genes;
     Orientation orient;
@@ -55,6 +56,7 @@ public class Animal {
             o.positionChanged(this.pos, newPos, this);
         }
         this.pos = newPos;
+        this.days++;
     }
 
     public void kill() {
@@ -119,4 +121,8 @@ public class Animal {
     public int getEnergy() {
         return this.energy;
     }
+
+    public Genome getGenes() { return this.genes; }
+
+    public int getLifespan() { return this.days; }
 }
