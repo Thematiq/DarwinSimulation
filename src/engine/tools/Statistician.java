@@ -11,15 +11,15 @@ import java.util.List;
 
 public class Statistician implements IObserverNewDay, IObserverKilled {
 
-    private List<Integer> livingAnimals = new ArrayList<>();
-    private List<Integer> deadAnimals = new ArrayList<>();
-    private List<Integer> vegetation = new ArrayList<>();
-    private List<Integer> meanEnergy = new ArrayList<>();
-    private List<Integer> meanChildren = new ArrayList<>();
-    private List<Integer> meanLifespan = new ArrayList<>();
-    private List<Genome> dominatingGenome = new ArrayList<>();
-    private List<Integer> deadLifespans = new ArrayList<>();
-    private List<IObserverStatistics> observerStatistics = new ArrayList<>();
+    private final List<Integer> livingAnimals = new ArrayList<>();
+    private final List<Integer> deadAnimals = new ArrayList<>();
+    private final List<Integer> vegetation = new ArrayList<>();
+    private final List<Integer> meanEnergy = new ArrayList<>();
+    private final List<Integer> meanChildren = new ArrayList<>();
+    private final List<Integer> meanLifespan = new ArrayList<>();
+    private final List<Genome> dominatingGenome = new ArrayList<>();
+    private final List<Integer> deadLifespans = new ArrayList<>();
+    private final List<IObserverStatistics> observerStatistics = new ArrayList<>();
 
     private long deadTotalLifespan;
     private int currentDay;

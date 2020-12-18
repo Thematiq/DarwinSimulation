@@ -1,5 +1,9 @@
 package engine.tools;
 
+/**
+ * Data structure containing simulation parameters
+ * @author Mateusz Praski
+ */
 public class Parameters {
     public final int width;
     public final int height;
@@ -10,7 +14,7 @@ public class Parameters {
     public final int startingAnimals;
 
     public Parameters() {
-        this(30, 30, 100, 1, 30, (float)0.5, 40);
+        this(10, 10, 100, 1, 30, (float)0.5, 10);
     }
 
     public Parameters(int width, int height, int startEnergy, int moveEnergy, int plantEnergy, float jungleRatio, int startingAnimals) {

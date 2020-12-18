@@ -1,20 +1,24 @@
 package engine.objects;
 
-
 import engine.tools.Vector;
 
+/**
+ * Class describing Grass object
+ * @author Mateusz Praski
+ */
 public class Grass {
-    public final Vector pos;
+    final Vector pos;
 
-    /** Spawns new Grass at a given tile
-     *
-     * @param pos Desired tile
+    /**
+     * Creates new Grass with a given position
+     * @param pos desired position
      */
     public Grass(Vector pos) {
         this.pos = pos;
     }
 
     /**
+     *
      * @return Grass position
      */
     public Vector getPos() {

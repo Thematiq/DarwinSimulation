@@ -12,8 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
-import java.sql.Time;
-
 public class DoubleController extends AbstractSimulatorController {
     private Simulation simOne;
     private Simulation simTwo;
@@ -125,13 +123,9 @@ public class DoubleController extends AbstractSimulatorController {
         this.statTwo = new Statistician(this.simTwo);
         this.statOne.addIObserverStatistics(this);
         this.statTwo.addIObserverStatistics(this);
-        this.timeOne = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> {
-            this.simOne.nextDay();
-        }));
+        this.timeOne = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> this.simOne.nextDay()));
         this.timeOne.setCycleCount(Animation.INDEFINITE);
-        this.timeTwo = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> {
-            this.simTwo.nextDay();
-        }));
+        this.timeTwo = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> this.simTwo.nextDay()));
         this.timeTwo.setCycleCount(Animation.INDEFINITE);
         this.setSimOneStatus(false);
         this.setSimTwoStatus(false);

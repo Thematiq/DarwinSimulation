@@ -1,13 +1,12 @@
 package engine.tools;
 
 /**
- * Various static tools used in different places inside the project
- *
+ * Various algebraic tools used in different places inside the project
  * @author Mateusz Praski
  */
 public class Algebra {
-    /** Transform Vector by a angle clockwise
-     *
+    /**
+     * Transform Vector by a angle clockwise
      * @param pos Vector from (0,0) to the bottom left
      * @param degree angle in degrees
      * @param centerVec Vector from the bottom left to the middle of the object
@@ -17,8 +16,8 @@ public class Algebra {
         pos = pos.add(centerVec);
         double radians = Math.toRadians(degree);
         return new Vector(
-                (int)(pos.x * Math.cos(radians) + pos.y * Math.sin(radians)),
-                (int)(pos.y * Math.cos(radians) - pos.x * Math.sin(radians))
+                (int) Math.round((pos.x * Math.cos(radians) + pos.y * Math.sin(radians))),
+                (int) Math.round((pos.y * Math.cos(radians) - pos.x * Math.sin(radians)))
         ).add(centerVec.opposite());
     }
 }

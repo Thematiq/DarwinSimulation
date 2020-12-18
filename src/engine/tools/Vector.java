@@ -1,20 +1,19 @@
 package engine.tools;
 
 import java.util.Objects;
-import java.util.Random;
 
 /**
- * Class desribing 2 dimensional vector
+ * Class describing 2-dimensional vector
  * @author Mateusz Praski
  */
 public class Vector {
     public final int x;
     public final int y;
 
-    /** Spawns new Vector
-     *
-     * @param x x coordinate
-     * @param y y coordinate
+    /**
+     * Creates new Vector object
+     * @param x X-axis coordinate
+     * @param y Y-axis coordinate
      */
     public Vector(int x, int y) {
         this.x = x;
@@ -22,43 +21,50 @@ public class Vector {
     }
 
     /**
-     * @return opposite vector (-x, -y)
+     *
+     * @return Vector opposite to calling vector
      */
     public Vector opposite() {return new Vector(-this.x, -this.y); }
 
     /**
-     * @param other Second vector
-     * @return Sum of the vectors
+     *
+     * @param other Second vector in addition
+     * @return Sum of two vectors
      */
     public Vector add(Vector other) {
         return new Vector(this.x + other.x, this.y + other.y);
     }
 
     /**
-     * @return new Vector scaled by a given integer
+     *
+     * @param scalar Vector scalar
+     * @return Vector multiplied by a scalar
      */
     public Vector mult(int scalar) {return new Vector(this.x * scalar, this.y * scalar); }
 
     /**
-     * @param other Second Vector
-     * @return True if Vector has both coordinates smaller than the other
+     *
+     * @param other Second vector
+     * @return True if a given vector has both coordinates equal or smaller than the second
      */
     public boolean precedes(Vector other) {
         return this.x <= other.x && this.y <= other.y;
     }
 
     /**
-     * @param other Second Vector
-     * @return True if Vector has both coordinates larger than the other
+     *
+     * @param other Second vector
+     * @return True if a given vector has both coordinates equal or larger than the second
      */
     public boolean follows(Vector other) {
         return this.x >= other.x && this.y >= other.y;
     }
 
-    /** Wraps Vector within bounds of the (0,0) - border rectangle
+    /** Wraps vector within border vector
+     *  Used in map wrapping
      *
-     * @param border topRight vertex of the rectangle
-     * @return wrapped Vector
+     * @param border vector limiting size
+     * @return Vector with coordinates equal or smaller than the border vector using wrapping
      */
     public Vector wrap(Vector border) {
         int new_x;

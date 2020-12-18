@@ -11,29 +11,31 @@ import engine.tools.Vector;
 
 import java.util.*;
 
+/**
+ * Class representing Simulation map
+ * @author Mateusz Praski
+ */
 public class SimulationMap implements IObserverPositionChanged, IObserverKilled {
-    final Vector jungleBottomLeft;
-    final Vector jungleTopRight;
-    final Vector bottomLeft = new Vector(0, 0);
-    final Vector topRight;
-    final int maxJungleBushes;
-    final int maxSteppeBushes;
-    final float bushThreshold = (float) 0.9;
-    final Parameters params;
-
-    private Random rand = new Random();
-    private Map<Vector, Grass> bushes = new HashMap<>();
-    private List<Animal> animalList = new ArrayList<>();
-    private Herd[][] herdsTable;
+    private final Parameters params;
+    private final Vector jungleBottomLeft;
+    private final Vector jungleTopRight;
+    private final Vector bottomLeft = new Vector(0, 0);
+    private final Vector topRight;
+    private final Random rand = new Random();
+    private final Map<Vector, Grass> bushes = new HashMap<>();
+    private final List<Animal> animalList = new ArrayList<>();
+    private final Herd[][] herdsTable;
+    private final int maxJungleBushes;
+    private final int maxSteppeBushes;
 
     private int livingAnimals = 0;
     private int deadAnimals = 0;
     private int steppeBushes = 0;
     private int jungleBushes = 0;
 
-    /** Creates a new map with animals
-     *
-     * @param params Param structure containing paremeters for a Map
+    /**
+     * Creates new map
+     * @param params Simulation params
      */
     public SimulationMap(Parameters params) {
         this.params = params;
@@ -61,18 +63,10 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     }
 
     /**
-     *
-     * @return Current number of living animals
+     * Adds Grass on a tile if its free and it isn't a null
+     * @param a Grass
      */
-    public int getLivingAnimals() {
-        return livingAnimals;
-    }
-
-    /** Add grass at a given position if it's free
-     *
-     * @param a Grass object
-     */
-    public void addGrass(Grass a) {
+    private void addGrass(Grass a) {
         if (a == null || this.bushes.get(a.getPos()) != null) {
             return;
         }
@@ -84,9 +78,54 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         this.bushes.put(a.getPos(), a);
     }
 
-    /** Add animal at a given position and links IObserverPositionChanged
-     *
-     * @param a Animal object
+    /**
+     * Steppe grass generator
+     * @return Grass on a steppe tile
+     */
+    private Grass getSteppeGrass() {
+        if (this.maxSteppeBushes == this.steppeBushes) {
+            return null;
+        }
+        Vector pos;
+        do {
+            pos = Generators.randomVector(this.rand, this.bottomLeft, this.topRight);
+        } while(this.bushes.get(pos) != null || this.isJungle(pos));
+        return new Grass(pos);
+    }
+
+    /**
+     * Jungle grass generator
+     * @return Grass on a jungle tile
+     */
+    private Grass getJungleGrass() {
+        if (this.maxJungleBushes == this.jungleBushes) {
+            return null;
+        }
+        Vector pos;
+        do {
+            pos = Generators.randomVector(this.rand, this.jungleBottomLeft, this.jungleTopRight);
+        } while(this.bushes.get(pos) != null);
+        return new Grass(pos);
+    }
+
+    /**
+     * Sends signal to the herd on a given tile to eat grass
+     * @param pos Grass position
+     */
+    public void eatGrass(Vector pos) {
+        if (this.herdsTable[pos.x][pos.y].eatGrass()) {
+            if(this.isJungle(pos)) {
+                this.jungleBushes--;
+            } else {
+                this.steppeBushes--;
+            }
+            this.bushes.remove(pos);
+        }
+    }
+
+    /**
+     * Adds the Animal on a given position
+     * @param a Animal
      */
     public void addAnimal(Animal a) {
         if (a == null) {
@@ -99,61 +138,10 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         this.animalList.add(a);
     }
 
-    /** Generates new Grass object at a free position inside the steppes
-     *
-     * @return new Grass object or null if steppes are full
+    /**
+     * Sends signal to the herd on a given tile to breed, and setups new animal
+     * @param pos Position
      */
-    Grass getSteppeGrass() {
-        if (this.maxSteppeBushes == this.steppeBushes) {
-            return null;
-        }
-        Vector pos;
-        do {
-            pos = Generators.randomVector(this.rand, this.bottomLeft, this.topRight);
-        } while(this.bushes.get(pos) != null || this.isJungle(pos));
-        return new Grass(pos);
-    }
-
-    /** Generates new Grass object at a free position inside the jungle
-     *
-     * @return new Grass object or null if jungle is full
-     */
-    Grass getJungleGrass() {
-        if (this.maxJungleBushes == this.jungleBushes) {
-            return null;
-        }
-        Vector pos;
-        do {
-            pos = Generators.randomVector(this.rand, this.jungleBottomLeft, this.jungleTopRight);
-        } while(this.bushes.get(pos) != null);
-        return new Grass(pos);
-    }
-
-    /** Spawn new grass inside jungle and the steppes
-     *  Used by Simulation object
-     */
-    public void spawnGrass() {
-        this.addGrass(this.getJungleGrass());
-        this.addGrass(this.getSteppeGrass());
-    }
-
-    public void kill(Animal a) {
-        this.animalList.remove(a);
-        this.livingAnimals--;
-        this.deadAnimals++;
-    }
-
-    public void eatGrass(Vector pos) {
-        if (this.herdsTable[pos.x][pos.y].eatGrass(this.params.plantEnergy)) {
-            if(this.isJungle(pos)) {
-                this.jungleBushes--;
-            } else {
-                this.steppeBushes--;
-            }
-            this.bushes.remove(pos);
-        }
-    }
-
     public void makeLove(Vector pos) {
         Animal a = this.herdsTable[pos.x][pos.y].makeLove();
         this.addAnimal(a);
@@ -170,7 +158,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     }
 
     /**
-     * Spawn new animal at a random free position, then adds it to the map
+     * Spawns new animal on a free tile
      */
     public void spawnAnimal() {
         Vector pos;
@@ -181,63 +169,11 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     }
 
     /**
-     * @param pos Desired position
-     * @return True if position is jungle tile
+     * Spawns one grass in the steppe and in the jungle
      */
-    public boolean isJungle(Vector pos) {
-        return this.jungleBottomLeft.precedes(pos) && this.jungleTopRight.follows(pos);
-    }
-
-    public boolean withinMap(Vector pos) {
-        return this.bottomLeft.precedes(pos) && this.topRight.follows(pos);
-    }
-
-    public int getGrassAmount() {
-        return this.jungleBushes + this.steppeBushes;
-    }
-
-    public int getDeadAnimals() { return this.deadAnimals; }
-
-    /**
-     * @param pos Desired position
-     * @return Strongest animal in the herd or null if hers is empty
-     */
-    public Animal animalAt(Vector pos) {
-        return this.herdsTable[pos.x][pos.y].getAnimal();
-    }
-
-    boolean isEmpty(Vector pos) { return this.animalAt(pos) == null; }
-    /**
-     * @param pos Desired position
-     * @return Object at a given position or null if tile is empty
-     */
-    public Object objectAt(Vector pos) {
-        Object ret = animalAt(pos);
-        if (ret != null) {
-            return ret;
-        } else {
-            return this.bushes.get(pos);
-        }
-    }
-
-    /**
-     * @param pos Desired position
-     * @return True if there is a grass at the tile
-     */
-    public boolean isGrass(Vector pos) {
-        return this.bushes.get(pos) != null;
-    }
-
-    /**
-     * @return 4 element array describing Jungle rectangle. Used to draw jungle
-     */
-    public int[] jungleSize() {
-        return new int[]{this.jungleBottomLeft.x, this.jungleBottomLeft.y,
-                         this.jungleTopRight.x - this.jungleBottomLeft.x + 1, this.jungleTopRight.y - this.jungleBottomLeft.y + 1};
-    }
-
-    public List<Animal> getAnimalList() {
-        return Collections.unmodifiableList(this.animalList);
+    public void spawnGrass() {
+        this.addGrass(this.getJungleGrass());
+        this.addGrass(this.getSteppeGrass());
     }
 
     @Override
@@ -246,18 +182,59 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         this.herdsTable[newPos.x][newPos.y].addAnimal(caller);
     }
 
-    public int getX() {
-        return this.topRight.x;
-    }
-
-    public int getY() {
-        return this.topRight.y;
-    }
-
     @Override
     public void killed(Animal a) {
         this.animalList.remove(a);
         this.livingAnimals--;
         this.deadAnimals++;
     }
+
+    public Animal animalAt(Vector pos) {
+        return this.herdsTable[pos.x][pos.y].getAnimal();
+    }
+
+    public boolean isJungle(Vector pos) {
+        return this.jungleBottomLeft.precedes(pos) && this.jungleTopRight.follows(pos);
+    }
+
+    public boolean withinMap(Vector pos) {
+        return this.bottomLeft.precedes(pos) && this.topRight.follows(pos);
+    }
+
+    boolean isEmpty(Vector pos) { return this.animalAt(pos) == null; }
+
+    public boolean isGrass(Vector pos) {
+        return this.bushes.get(pos) != null;
+    }
+
+    /**
+     *
+     * @return Jungle rectangle location as a 4 elements Array
+     */
+    public int[] jungleSize() {
+        return new int[]{this.jungleBottomLeft.x, this.jungleBottomLeft.y,
+                this.jungleTopRight.x - this.jungleBottomLeft.x + 1, this.jungleTopRight.y - this.jungleBottomLeft.y + 1};
+    }
+
+    public List<Animal> getAnimalList() {
+        return Collections.unmodifiableList(this.animalList);
+    }
+
+    public Vector getTopRight() { return this.topRight; }
+
+    public int getLivingAnimals() { return livingAnimals; }
+
+    public int getDeadAnimals() { return this.deadAnimals; }
+
+    public int getSteppeBushes() { return this.steppeBushes; }
+
+    public int getJungleBushes() { return this.jungleBushes; }
+
+    public int getMaxJungleBushes() { return this.maxJungleBushes; }
+
+    public int getMaxSteppeBushes() { return this.maxSteppeBushes; }
+
+    public int getX() { return this.topRight.x; }
+
+    public int getY() { return this.topRight.y; }
 }

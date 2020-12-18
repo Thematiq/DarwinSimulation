@@ -2,10 +2,14 @@ package engine.tools;
 
 import java.util.Random;
 
+/**
+ * Various generators used in a program
+ * @author Mateusz Praski
+ */
 public class Generators {
 
-    /** Creates new Vector inside given rectangle
-     *
+    /**
+     * Creates new Vector inside given rectangle
      * @param rn Java Random object
      * @param bottomLeft Bottom left corner of the rectangle
      * @param topRight Top right corner of the rectangle

@@ -142,7 +142,7 @@
       <children>
         <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="[S1] Day:" textFill="#5f5f5f" HBox.hgrow="ALWAYS">
           <font>
-            <Font size="15.0" fx:id="x3" />
+            <Font size="15.0"/>
           </font>
                <HBox.margin>
                   <Insets left="20.0" />

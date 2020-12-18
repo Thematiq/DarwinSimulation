@@ -2,6 +2,10 @@ package engine.observers;
 
 import engine.objects.Animal;
 
+/**
+ * Observer for a Animal.killed() method
+ * @author Mateusz Praski
+ */
 public interface IObserverKilled {
-    public void killed(Animal a);
+    void killed(Animal a);
 }

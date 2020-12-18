@@ -10,20 +10,24 @@ import engine.tools.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class describing Animal object
+ * @author Mateusz Praski
+ */
 public class Animal {
-    final Parameters params;
-    int energy = 0;
-    int days = 0;
-    Vector pos;
-    Genome genes;
-    Orientation orient;
-    List<IObserverPositionChanged> positionObservers = new ArrayList<>();
-    List<IObserverKilled> killedObservers = new ArrayList<>();
+    private final Parameters params;
+    private final Genome genes;
+    private final List<IObserverPositionChanged> positionObservers = new ArrayList<>();
+    private final List<IObserverKilled> killedObservers = new ArrayList<>();
+    private int energy = 0;
+    private int days = 0;
+    private Vector pos;
+    private Orientation orient;
 
-
-    /** Spawns new Animal at a desired position
-     *
-     * @param pos Desired position
+    /**
+     * Creates new Animal object
+     * @param pos Starting position
+     * @param params Simulation parameters
      */
     public Animal(Vector pos, Parameters params) {
         this.params = params;
@@ -33,6 +37,11 @@ public class Animal {
         this.energy = this.params.startEnergy;
     }
 
+    /**
+     * Creates new Animal object from its parents
+     * @param father Dominating genome
+     * @param mother Inferior genome
+     */
     public Animal(Animal father, Animal mother) {
         this.params = father.params;
         int parentEnergy = father.getEnergy() / 4;
@@ -46,9 +55,10 @@ public class Animal {
         this.pos = new Vector(0,0);
     }
 
-    /** Moves animal to the new tile
-     *
-     * @param newPos desired tile
+    /**
+     * Moves animal to the new position, calling observers
+     * This method decreases energy by move cost
+     * @param newPos desired position
      */
     public void move(Vector newPos) {
         this.loseEnergy(this.params.moveEnergy);
@@ -59,65 +69,68 @@ public class Animal {
         this.days++;
     }
 
+    /**
+     * Calls all observers, that animal have been killed
+     */
     public void kill() {
         for(IObserverKilled o : this.killedObservers) {
             o.killed(this);
         }
     }
 
+    /**
+     * Increases animal energy
+     * @param energy eaten energy
+     */
     public void eat(int energy) {
         this.energy += energy;
     }
 
+    /**
+     * Decreases animal energy
+     * @param energy lost energy
+     */
     public void loseEnergy(int energy) {
         this.energy -= energy;
     }
 
+    /**
+     * Changes animal rotation based on a Genome
+     */
     public void Rotate() {
         this.orient = this.genes.getRotation();
     }
 
-    /** Links IObserverPositionChanged
-     *
-     * @param obs observer
+    /**
+     * Adds new move() observer
+     * @param obs new observer
      */
     public void addPositionObserver(IObserverPositionChanged obs) {
         this.positionObservers.add(obs);
     }
 
+    /**
+     * Adds new kill() observer
+     * @param obs new observer
+     */
     public void addKilledObserver(IObserverKilled obs) { this.killedObservers.add(obs); }
 
-    /**
-     * @return current Animal orientation
-     */
     public Orientation getOrient() {
         return this.orient;
     }
 
-    /**
-     * @return current Animal position
-     */
     public Vector getPos() {
         return this.pos;
     }
 
-    /**
-     * @return current Animal X coordinate
-     */
     public int getX() {
         return this.pos.x;
     }
 
-    /**
-     * @return current Animal Y coordinate
-     */
     public int getY() {
         return this.pos.y;
     }
 
-    /**
-     * @return current Animal energy
-     */
     public int getEnergy() {
         return this.energy;
     }

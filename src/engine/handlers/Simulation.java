@@ -8,34 +8,46 @@ import engine.tools.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class representing Simulation
+ * @author Mateusz Praski
+ */
 public class Simulation {
+    private final List<IObserverNewDay> newDayObservers = new ArrayList<>();
+    private final SimulationMap map;
 
-    private List<IObserverNewDay> newDayObservers = new ArrayList<>();
     private int day = 0;
-    private SimulationMap map;
-
-    public Simulation(Parameters params) {
-        this.map = new SimulationMap(params);
-    }
-
-    public void addNewDayObserver(IObserverNewDay observer) {
-        this.newDayObservers.add(observer);
-    }
-
-    public void zeroDay() {
-        for(IObserverNewDay obs : this.newDayObservers) {
-            obs.dayChanged(this.day, this);
-        }
-    }
 
     /**
-     * Ticks current simulation by a dayW
+     * Creates new simulation
+     * @param params Simulation params
+     */
+    public Simulation(Parameters params) { this.map = new SimulationMap(params); }
+
+    /**
+     * Calls all observer during 0-th day
+     * Separated from constructor to allow adding observers
+     */
+    public void zeroDay() { this.callObservers(); }
+
+    /**
+     * Handles new day
      */
     public void nextDay() {
         this.day++;
-        Vector newpos;
+        this.handleKilling();
+        this.handleMovement();
+        this.handleEating();
+        this.handleLove();
+        this.map.spawnGrass();
+        this.callObservers();
+    }
+
+    /**
+     * Kills all animals having energy smaller than zero
+     */
+    private void handleKilling() {
         List<Animal> reaperPuppiesList = new ArrayList<>();
-        // Kill
         for (Animal a : this.map.getAnimalList()) {
             if (a.getEnergy() <= 0) {
                 reaperPuppiesList.add(a);
@@ -44,18 +56,27 @@ public class Simulation {
         for(Animal a : reaperPuppiesList) {
             a.kill();
         }
+    }
 
-        // Rotate and move
+    /**
+     * Rotates all animals and moves them
+     */
+    private void handleMovement() {
+        Vector newPos;
         for(Animal a : this.map.getAnimalList()) {
             a.Rotate();
-            newpos = a.getPos().add(a.getOrient().getUnitVector());
-            if(!this.map.withinMap(newpos)) {
-                newpos = newpos.wrap(this.map.topRight);
+            newPos = a.getPos().add(a.getOrient().getUnitVector());
+            if(!this.map.withinMap(newPos)) {
+                newPos = newPos.wrap(this.map.getTopRight());
             }
-            a.move(newpos);
+            a.move(newPos);
         }
+    }
 
-        // Eat
+    /**
+     * Send signal to the all tiles containing grass to eat
+     */
+    private void handleEating() {
         for(int x = 0; x < this.map.getX(); ++x) {
             for(int y = 0; y < this.map.getY(); ++y) {
                 if (this.map.isGrass(new Vector(x, y))) {
@@ -63,64 +84,54 @@ public class Simulation {
                 }
             }
         }
+    }
 
-        // Love
+    /**
+     * Send signal to all tiles to breed
+     */
+    private void handleLove() {
         for(int x = 0; x < this.map.getX(); ++x) {
             for(int y = 0; y < this.map.getY(); ++y) {
                 this.map.makeLove(new Vector(x, y));
             }
         }
+    }
 
-        // New grass
-        this.map.spawnGrass();
-
-        // Call observers
+    /**
+     * Calls all observers
+     */
+    private void callObservers() {
         for(IObserverNewDay obs : this.newDayObservers) {
             obs.dayChanged(this.day, this);
         }
     }
 
-    /**
-      * @return Current simulation day
-      */
+    public void addNewDayObserver(IObserverNewDay observer) {
+        this.newDayObservers.add(observer);
+    }
+
+    public Animal animalAt(Vector pos) { return this.map.animalAt(pos); }
+
+    public boolean isGrass(Vector pos) {
+        return this.map.isGrass(pos);
+    }
+
+    public List<Animal> getAnimalList() { return this.map.getAnimalList(); }
+
     public int getDay() {
         return this.day;
     }
 
-    /**
-     * @return current simulation population
-     */
     public int getPopulation() {
         return this.map.getLivingAnimals();
     }
 
     public int getVegetation() {
-        return this.map.getGrassAmount();
+        return this.map.getSteppeBushes() + this.map.getMaxJungleBushes();
     }
 
     public int getGraveyard() { return this.map.getDeadAnimals(); }
 
-    public List<Animal> getAnimalList() { return this.map.getAnimalList(); }
-
-    /**
-     * @param pos Position at the map
-     * @return Animal at a given position or null if there are none
-     */
-    public Animal animalAt(Vector pos) { return this.map.animalAt(pos); }
-
-    /**
-     *
-     * @param pos Position at the map
-     * @return True if there is a grass at a given pos
-     */
-    public boolean isGrass(Vector pos) {
-        return this.map.isGrass(pos);
-    }
-
-    /**
-     *
-     * @return 4 element array describing Jungle rectangle. Used to draw jungle
-     */
     public int[] jungleSize() {
         return this.map.jungleSize();
     }

@@ -134,9 +134,7 @@ public class singleController extends AbstractSimulatorController implements IOb
         this.stat = new Statistician(this.sim);
         this.stat.addIObserverStatistics(this);
         // Add timeline
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> {
-            this.sim.nextDay();
-        }));
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> this.sim.nextDay()));
         this.timeline.setCycleCount(Animation.INDEFINITE);
         this.setStatus(false);
         this.sim.zeroDay();
