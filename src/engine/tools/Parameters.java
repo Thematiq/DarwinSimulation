@@ -10,7 +10,7 @@ public class Parameters {
     public final int startingAnimals;
 
     public Parameters() {
-        this(100, 100, 50, 2, 10, (float)0.5, 10);
+        this(30, 30, 100, 1, 30, (float)0.5, 40);
     }
 
     public Parameters(int width, int height, int startEnergy, int moveEnergy, int plantEnergy, float jungleRatio, int startingAnimals) {

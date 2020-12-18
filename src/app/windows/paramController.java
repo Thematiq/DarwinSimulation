@@ -73,7 +73,7 @@ public class paramController implements Initializable {
 
     @FXML
     void startSim() throws IOException {
-        if (this.allParams()) {
+        if (true) {
             if (this.single) {
                 this.spawnSimulationWindow("singleSimulation.fxml", this.scrapParams());
             } else {
@@ -106,6 +106,7 @@ public class paramController implements Initializable {
     }
 
     private Parameters scrapParams() {
+        /*
         int width = Integer.parseInt(this.widthText.getText());
         int height = Integer.parseInt(this.heightText.getText());
         int startEnergy = Integer.parseInt(this.energyText.getText());
@@ -114,6 +115,8 @@ public class paramController implements Initializable {
         int startingAnimals = Integer.parseInt(this.startingText.getText());
         float jungleRation = Float.parseFloat(this.jungleText.getText());
         return new Parameters(width, height, startEnergy, moveEnergy, plantEnergy, jungleRation, startingAnimals);
+         */
+        return new Parameters();
     }
 
     private boolean allParams() {

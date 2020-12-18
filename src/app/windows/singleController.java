@@ -23,7 +23,9 @@ public class singleController extends AbstractSimulatorController implements IOb
     private Statistician stat;
     private Simulation sim;
     private XYChart.Series<Number, Number> population;
+    Timeline timeline;
     private XYChart.Series<Number, Number> vegetation;
+
     @FXML
     private Label labelPop;
     @FXML
@@ -90,7 +92,7 @@ public class singleController extends AbstractSimulatorController implements IOb
         System.out.println("Cell X: " + (int)(e.getX() / this.cellSize) + " Cell Y: " + (int)(e.getY() / this.cellSize));
     }
 
-    void init_chart() {
+    void initChart() {
         this.population = new XYChart.Series<>();
         this.vegetation = new XYChart.Series<>();
         this.population.setName("No animals");
@@ -100,7 +102,7 @@ public class singleController extends AbstractSimulatorController implements IOb
     }
 
     @Override
-    public void update() {
+    public void update(Statistician caller) {
         this.population.getData().add(new XYChart.Data<>(this.stat.getCurrentDay(), this.stat.getCurrentAnimals()));
         this.vegetation.getData().add(new XYChart.Data<>(this.stat.getCurrentDay(), this.stat.getCurrentVegetation()));
 
@@ -113,25 +115,11 @@ public class singleController extends AbstractSimulatorController implements IOb
         this.currentEngLabel.setText(String.valueOf(this.stat.getCurrentEnergy()));
         this.currentSpanLabel.setText(String.valueOf(this.stat.getCurrentLifespan()));
 
-        super.run_drawer(this.sim, this.canvasSim);
+        super.runDrawer(this.sim, this.canvasSim);
     }
 
-    public void dayChanged(int day, Simulation caller) {
-        this.population.getData().add(new XYChart.Data<>(caller.getDay(), caller.getPopulation()));
-        this.vegetation.getData().add(new XYChart.Data<>(caller.getDay(), caller.getVegetation()));
-
-        this.labelDay.setText(String.valueOf(caller.getDay()));
-        this.labelPop.setText(String.valueOf(caller.getPopulation()));
-
-        this.currentPopLabel.setText(String.valueOf(caller.getPopulation()));
-        this.currentVegLabel.setText(String.valueOf(caller.getVegetation()));
-        this.currentGraveLabel.setText(String.valueOf(caller.getGraveyard()));
-
-        super.run_drawer(caller, this.canvasSim);
-    }
-
-    void init_drawer() {
-        this.cellSize = (int) (this.canvasSim.getWidth() / this.params.width);
+    void initDrawer() {
+        super.cellSize = (int) (this.canvasSim.getWidth() / this.params.width);
         this.canvasSim.setHeight(this.cellSize * this.params.height);
         this.canvasSim.setWidth(this.cellSize * this.params.width);
     }
@@ -140,8 +128,8 @@ public class singleController extends AbstractSimulatorController implements IOb
     public void initSimulation(Parameters param) {
         System.out.println(param);
         super.params = param;
-        this.init_chart();
-        this.init_drawer();
+        this.initChart();
+        this.initDrawer();
         this.sim = new Simulation(this.params);
         this.stat = new Statistician(this.sim);
         this.stat.addIObserverStatistics(this);
@@ -151,6 +139,6 @@ public class singleController extends AbstractSimulatorController implements IOb
         }));
         this.timeline.setCycleCount(Animation.INDEFINITE);
         this.setStatus(false);
-        this.dayChanged(0, this.sim);
+        this.sim.zeroDay();
     }
 }

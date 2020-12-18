@@ -22,6 +22,12 @@ public class Simulation {
         this.newDayObservers.add(observer);
     }
 
+    public void zeroDay() {
+        for(IObserverNewDay obs : this.newDayObservers) {
+            obs.dayChanged(this.day, this);
+        }
+    }
+
     /**
      * Ticks current simulation by a dayW
      */

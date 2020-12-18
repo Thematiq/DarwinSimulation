@@ -35,7 +35,7 @@ public class Statistician implements IObserverNewDay, IObserverKilled {
 
     void callObservers() {
         for (IObserverStatistics o : this.observerStatistics) {
-            o.update();
+            o.update(this);
         }
     }
 
@@ -54,7 +54,11 @@ public class Statistician implements IObserverNewDay, IObserverKilled {
         }
 
         this.meanLifespan.add((int) (lifespan + this.deadTotalLifespan)/(this.deadAnimals.size() + currentAnimals.size()));
-        this.meanEnergy.add((int) (totalEnergy / currentAnimals.size()));
+        if (currentAnimals.size() != 0) {
+            this.meanEnergy.add((int) (totalEnergy / currentAnimals.size()));
+        } else {
+            this.meanEnergy.add(0);
+        }
 
         this.callObservers();
     }

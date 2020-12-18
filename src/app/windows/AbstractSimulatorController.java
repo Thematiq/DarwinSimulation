@@ -2,8 +2,10 @@ package app.windows;
 
 import engine.handlers.Simulation;
 import engine.objects.Animal;
+import engine.observers.IObserverStatistics;
 import engine.tools.Algebra;
 import engine.tools.Parameters;
+import engine.tools.Statistician;
 import engine.tools.Vector;
 import javafx.animation.Timeline;
 import javafx.scene.canvas.Canvas;
@@ -11,7 +13,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-public abstract class AbstractSimulatorController {
+public abstract class AbstractSimulatorController implements IObserverStatistics {
     final Image animal = new Image("file:resources/animal.png");
     final Image flower = new Image("file:resources/flower.png");
     final Image icon = new Image("file:resources/icon.png");
@@ -19,13 +21,14 @@ public abstract class AbstractSimulatorController {
     final boolean grid = false;
     final int dayLength = 100;
 
-    Timeline timeline;
     int cellSize;
     Parameters params;
 
     public abstract void initSimulation(Parameters param);
 
-    void run_drawer(Simulation sim, Canvas can) {
+    public abstract void update(Statistician caller);
+
+    void runDrawer(Simulation sim, Canvas can) {
         GraphicsContext gc = can.getGraphicsContext2D();
         // Draw map
         Animal an;
