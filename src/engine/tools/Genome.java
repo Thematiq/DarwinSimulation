@@ -4,9 +4,10 @@ import java.util.*;
 
 public class Genome {
     public static final int GENOME_SIZE = 32;
-    Random r = new Random();
-    int[] code;
-    int[] codePopularity;
+    private final Random r = new Random();
+    private final int[] code;
+
+    private int[] codePopularity;
 
     public Genome(int[] code) {
         if (code.length != GENOME_SIZE) {
@@ -64,13 +65,6 @@ public class Genome {
         }
     }
 
-    static boolean checkGenome(int[] code) {
-        boolean[] numbers = new boolean[8];
-        for (int c : code) { numbers[c] = true; }
-        for (boolean b : numbers) { if (!b) return false; }
-        return true;
-    }
-
     void repairGenome() {
         if (checkGenome(this.code)) {
             return;
@@ -91,8 +85,11 @@ public class Genome {
         }
     }
 
-    public Orientation getRotation() {
-        return Orientation.getOrient(this.code[r.nextInt(GENOME_SIZE)]);
+    static boolean checkGenome(int[] code) {
+        boolean[] numbers = new boolean[8];
+        for (int c : code) { numbers[c] = true; }
+        for (boolean b : numbers) { if (!b) return false; }
+        return true;
     }
 
     @Override
@@ -104,7 +101,24 @@ public class Genome {
         return ans;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genome genome = (Genome) o;
+        return Arrays.equals(code, genome.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(code);
+    }
+
     public int[] getCodePopularity() {
         return this.codePopularity;
+    }
+
+    public Orientation getRotation() {
+        return Orientation.getOrient(this.code[r.nextInt(GENOME_SIZE)]);
     }
 }

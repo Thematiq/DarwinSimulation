@@ -1,6 +1,7 @@
 package engine.handlers;
 
 import engine.objects.Animal;
+import engine.observers.IObserverKilled;
 import engine.observers.IObserverNewDay;
 import engine.tools.Parameters;
 import engine.tools.Vector;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 public class Simulation {
     private final List<IObserverNewDay> newDayObservers = new ArrayList<>();
+    private final List<IObserverKilled> observerKilled = new ArrayList<>();
     private final SimulationMap map;
 
     private int day = 0;
@@ -55,6 +57,9 @@ public class Simulation {
         }
         for(Animal a : reaperPuppiesList) {
             a.kill();
+            for(IObserverKilled obs : this.observerKilled) {
+                obs.killed(a);
+            }
         }
     }
 
@@ -77,8 +82,8 @@ public class Simulation {
      * Send signal to the all tiles containing grass to eat
      */
     private void handleEating() {
-        for(int x = 0; x < this.map.getX(); ++x) {
-            for(int y = 0; y < this.map.getY(); ++y) {
+        for(int x = 0; x < this.map.getMaxX(); ++x) {
+            for(int y = 0; y < this.map.getMaxY(); ++y) {
                 if (this.map.isGrass(new Vector(x, y))) {
                     this.map.eatGrass(new Vector(x, y));
                 }
@@ -90,8 +95,8 @@ public class Simulation {
      * Send signal to all tiles to breed
      */
     private void handleLove() {
-        for(int x = 0; x < this.map.getX(); ++x) {
-            for(int y = 0; y < this.map.getY(); ++y) {
+        for(int x = 0; x < this.map.getMaxX(); ++x) {
+            for(int y = 0; y < this.map.getMaxY(); ++y) {
                 this.map.makeLove(new Vector(x, y));
             }
         }
@@ -109,6 +114,8 @@ public class Simulation {
     public void addNewDayObserver(IObserverNewDay observer) {
         this.newDayObservers.add(observer);
     }
+
+    public void addNewAllKillsObserver(IObserverKilled observer) { this.observerKilled.add(observer); }
 
     public Animal animalAt(Vector pos) { return this.map.animalAt(pos); }
 

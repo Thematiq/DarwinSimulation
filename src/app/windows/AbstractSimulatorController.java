@@ -2,17 +2,17 @@ package app.windows;
 
 import engine.handlers.Simulation;
 import engine.objects.Animal;
-import engine.observers.IObserverStatistics;
+import engine.observers.IObserverSimulationStatistics;
 import engine.tools.Algebra;
 import engine.tools.Parameters;
-import engine.tools.Statistician;
+import engine.tools.SimulationStatistician;
 import engine.tools.Vector;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-public abstract class AbstractSimulatorController implements IObserverStatistics {
+public abstract class AbstractSimulatorController implements IObserverSimulationStatistics {
     final Image animal = new Image("file:resources/animal.png");
     final Image flower = new Image("file:resources/flower.png");
     final boolean grid = false;
@@ -23,7 +23,7 @@ public abstract class AbstractSimulatorController implements IObserverStatistics
 
     public abstract void initSimulation(Parameters param);
 
-    public abstract void update(Statistician caller);
+    public abstract void update(SimulationStatistician caller);
 
     void runDrawer(Simulation sim, Canvas can) {
         GraphicsContext gc = can.getGraphicsContext2D();

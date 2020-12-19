@@ -11,8 +11,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.json.simple.parser.ParseException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -84,8 +87,24 @@ public class paramController implements Initializable {
 
     @FXML
     void readFile() {
-        //TODO
-        //Read files params to text boxes
+        try {
+            Stage currentStage = (Stage) this.startingText.getScene().getWindow();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose parameters JSON file");
+            fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("JSON files", "*.json"));
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+            String path = fileChooser.showOpenDialog(currentStage).getPath();
+            Parameters params = new Parameters(path);
+            if (this.single) {
+                this.spawnSimulationWindow("singleSimulation.fxml", params);
+            } else {
+                this.spawnSimulationWindow("doubleSimulation.fxml", params);
+            }
+        } catch (Error e) {
+            System.out.println(e.getMessage());
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

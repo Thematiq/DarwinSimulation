@@ -52,7 +52,10 @@ public class Herd implements IObserverKilled {
         if(couple[1].getEnergy() < 0.5 * this.params.startEnergy) {
             return null;
         }
-        return new Animal(couple[0], couple[1]);
+        Animal child =  new Animal(couple[0], couple[1]);
+        couple[0].breed(child);
+        couple[1].breed(child);
+        return child;
     }
 
     /**

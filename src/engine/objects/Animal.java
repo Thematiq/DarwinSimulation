@@ -1,5 +1,6 @@
 package engine.objects;
 
+import engine.observers.IObserverBreed;
 import engine.observers.IObserverKilled;
 import engine.observers.IObserverPositionChanged;
 import engine.tools.Genome;
@@ -19,8 +20,11 @@ public class Animal {
     private final Genome genes;
     private final List<IObserverPositionChanged> positionObservers = new ArrayList<>();
     private final List<IObserverKilled> killedObservers = new ArrayList<>();
+    private final List<IObserverBreed> breedObservers = new ArrayList<>();
+
     private int energy = 0;
     private int days = 0;
+    private int children = 0;
     private Vector pos;
     private Orientation orient;
 
@@ -70,6 +74,17 @@ public class Animal {
     }
 
     /**
+     * Calls all observers, that animal have breed
+     * @param child Animal's child
+     */
+    void breed(Animal child) {
+        this.children++;
+        for (IObserverBreed obs : this.breedObservers) {
+            obs.breed(this, child);
+        }
+    }
+
+    /**
      * Calls all observers, that animal have been killed
      */
     public void kill() {
@@ -115,6 +130,12 @@ public class Animal {
      */
     public void addKilledObserver(IObserverKilled obs) { this.killedObservers.add(obs); }
 
+    /**
+     * Adds new breed() observer
+     * @param obs new observer
+     */
+    public void addBreedObserver(IObserverBreed obs) { this.breedObservers.add(obs); }
+
     public Orientation getOrient() {
         return this.orient;
     }
@@ -138,4 +159,6 @@ public class Animal {
     public Genome getGenes() { return this.genes; }
 
     public int getLifespan() { return this.days; }
+
+    public int getChildren() { return this.children; }
 }

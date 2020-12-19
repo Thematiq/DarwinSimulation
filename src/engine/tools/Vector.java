@@ -1,5 +1,7 @@
 package engine.tools;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -69,21 +71,49 @@ public class Vector {
     public Vector wrap(Vector border) {
         int new_x;
         int new_y;
-        if(this.x > border.x) {
+        if (this.x > border.x) {
             new_x = this.x - border.x - 1;
-        } else if(this.x < 0) {
+        } else if (this.x < 0) {
             new_x = border.x + this.x + 1;
         } else {
             new_x = x;
         }
-        if(this.y > border.y) {
+        if (this.y > border.y) {
             new_y = this.y - border.y - 1;
-        } else if(this.y < 0) {
+        } else if (this.y < 0) {
             new_y = border.y + this.y + 1;
         } else {
             new_y = y;
         }
         return new Vector(new_x, new_y);
+    }
+
+    public List<Vector> getNeighbours(Vector bottomLeft, Vector topRight) {
+        List<Vector> out = new ArrayList<>();
+        Vector potential;
+        for (int x = this.x-1; x <= this.x+1; ++x) {
+            for (int y = this.y-1; y <= this.y+1; ++y) {
+                potential = new Vector(x, y);
+                if (potential.follows(bottomLeft) && potential.precedes(topRight) && !potential.equals(this)) {
+                    out.add(potential);
+                }
+            }
+        }
+        return out;
+    }
+
+    public List<Vector> getNeighbours() {
+        List<Vector> out = new ArrayList<>();
+        Vector potential;
+        for (int x = this.x-1; x <= this.x+1; ++x) {
+            for (int y = this.y-1; y <= this.y+1; ++y) {
+                potential = new Vector(x, y);
+                if (!potential.equals(this)) {
+                    out.add(potential);
+                }
+            }
+        }
+        return out;
     }
 
     @Override

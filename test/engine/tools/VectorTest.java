@@ -2,6 +2,9 @@ package engine.tools;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -94,6 +97,22 @@ public class VectorTest {
         for (int i = 0; i < testVectors.length; ++i) {
             assertEquals(testVectors[i].wrap(boundaryVector),
                          wrappedVector[i]);
+        }
+    }
+
+    @Test
+    public void getNeighboursTest() {
+        List<Vector> testList;
+        for (Vector v : testVectors) {
+            assertEquals(new ArrayList<Vector>(), v.getNeighbours(v, v));
+        }
+        for (Vector v : testVectors) {
+            testList = v.getNeighbours(new Vector(0, 0), new Vector(10, 10));
+            assertEquals(testList.size(), 8);
+        }
+        for (Vector v : testVectors) {
+            testList = v.getNeighbours();
+            assertEquals(testList.size(), 8);
         }
     }
 

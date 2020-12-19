@@ -3,8 +3,12 @@ package engine.observers;
 import engine.objects.Animal;
 import engine.tools.Vector;
 
+/**
+ * Mock object to test objects having positionChanged observers
+ * @author Mateusz Praski
+ */
 public class MockIObserverPositionChanged implements IObserverPositionChanged {
-    private int value;
+    private int value = 0;
 
     public MockIObserverPositionChanged() { }
 

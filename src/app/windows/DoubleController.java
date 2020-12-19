@@ -2,7 +2,7 @@ package app.windows;
 
 import engine.handlers.Simulation;
 import engine.tools.Parameters;
-import engine.tools.Statistician;
+import engine.tools.SimulationStatistician;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -15,8 +15,8 @@ import javafx.util.Duration;
 public class DoubleController extends AbstractSimulatorController {
     private Simulation simOne;
     private Simulation simTwo;
-    private Statistician statOne;
-    private Statistician statTwo;
+    private SimulationStatistician statOne;
+    private SimulationStatistician statTwo;
     private Timeline timeOne;
     private Timeline timeTwo;
 
@@ -76,9 +76,7 @@ public class DoubleController extends AbstractSimulatorController {
     private void stopOne() { this.setSimOneStatus(false); }
 
     @FXML
-    private void nextOne() {
-
-    }
+    private void nextOne() { this.simOne.nextDay(); }
 
     @FXML
     private void startTwo() { this.setSimTwoStatus(true); }
@@ -87,9 +85,7 @@ public class DoubleController extends AbstractSimulatorController {
     private void stopTwo() { this.setSimTwoStatus(false); }
 
     @FXML
-    private void nextTwo() {
-
-    }
+    private void nextTwo() { this.simTwo.nextDay(); }
 
     private void setSimOneStatus(boolean status) {
         this.nextOneButton.setDisable(status);
@@ -119,10 +115,12 @@ public class DoubleController extends AbstractSimulatorController {
         this.initDrawer();
         this.simOne = new Simulation(super.params);
         this.simTwo = new Simulation(super.params);
-        this.statOne = new Statistician(this.simOne);
-        this.statTwo = new Statistician(this.simTwo);
+        this.statOne = new SimulationStatistician(this.simOne);
+        this.statTwo = new SimulationStatistician(this.simTwo);
         this.statOne.addIObserverStatistics(this);
         this.statTwo.addIObserverStatistics(this);
+        this.simOne.addNewAllKillsObserver(this.statOne);
+        this.simTwo.addNewAllKillsObserver(this.statTwo);
         this.timeOne = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> this.simOne.nextDay()));
         this.timeOne.setCycleCount(Animation.INDEFINITE);
         this.timeTwo = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> this.simTwo.nextDay()));
@@ -134,7 +132,8 @@ public class DoubleController extends AbstractSimulatorController {
     }
 
     void initDrawer() {
-        super.cellSize = (int) (Math.min(this.canvasOne.getWidth(), this.canvasOne.getHeight()) / this.params.width);
+        super.cellSize = (int) (Math.min(this.canvasOne.getWidth(), this.canvasOne.getHeight()) /
+                                Math.max(this.params.width, this.params.height));
         this.canvasOne.setWidth(super.cellSize * super.params.width);
         this.canvasOne.setHeight(super.cellSize * super.params.height);
         this.canvasTwo.setWidth(super.cellSize * super.params.width);
@@ -142,7 +141,7 @@ public class DoubleController extends AbstractSimulatorController {
     }
 
     @Override
-    public void update(Statistician caller) {
+    public void update(SimulationStatistician caller) {
         if (caller.equals(this.statOne)) {
             this.simOnePop.setText(String.valueOf(caller.getCurrentAnimals()));
             this.simOneDay.setText(String.valueOf(caller.getCurrentDay()));
