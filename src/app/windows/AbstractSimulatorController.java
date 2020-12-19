@@ -2,30 +2,73 @@ package app.windows;
 
 import engine.handlers.Simulation;
 import engine.objects.Animal;
+import engine.observers.IObserverAnimalStatistics;
 import engine.observers.IObserverSimulationStatistics;
-import engine.tools.Algebra;
-import engine.tools.Parameters;
-import engine.tools.SimulationStatistician;
-import engine.tools.Vector;
+import engine.tools.*;
+
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-public abstract class AbstractSimulatorController implements IObserverSimulationStatistics {
+import java.util.regex.Pattern;
+
+/**
+ * Abstract class for simulation controllers
+ * Handlers map drawing
+ * @author Mateusz Praski
+ */
+public abstract class AbstractSimulatorController implements IObserverSimulationStatistics, IObserverAnimalStatistics {
+    final Pattern numericPattern = Pattern.compile("^([1-9][0-9]*)?$");
     final Image animal = new Image("file:resources/animal.png");
     final Image flower = new Image("file:resources/flower.png");
+    final String stillLiving = "Haven't died yet";
+    final String watcherEnded = "Didn't die during watching";
+    final String watchingRunning = "Watching / Please stop simulation to choose new animal";
+    final String watchingPaused = "Watching / Click on map to choose new animal";
+    final String Paused = "Click on map to choose new animal";
+    final String Running = "Please stop simulation to choose new animal";
     final boolean grid = false;
-    final int dayLength = 100;
+    final int dayLength = 200;
 
-    int cellSize;
     Parameters params;
+    boolean drawDominant = false;
+    int cellSize;
 
+    Change numericChange(Change change) {
+        if(numericPattern.matcher(change.getControlNewText()).matches()) {
+            return change;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Prepares window with given parameters
+     * @param param Simulation parameters
+     */
     public abstract void initSimulation(Parameters param);
 
+    /**
+     * IObserverSimulationStatistics handler
+     * @param caller Calling statistician
+     */
     public abstract void update(SimulationStatistician caller);
 
-    void runDrawer(Simulation sim, Canvas can) {
+    /**
+     * IObserverAnimalStatistic handler
+     * @param caller calling statistician
+     */
+    public abstract void newData(AnimalStatistician caller);
+
+    /**
+     * Draws map
+     * @param sim Simulation object
+     * @param can Canvas
+     * @param dom Dominating genome in the simulation
+     */
+    void draw(Simulation sim, Canvas can, Genome dom) {
         GraphicsContext gc = can.getGraphicsContext2D();
         this.drawMap(gc, sim);
 
@@ -37,7 +80,7 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
                 }
                 an = sim.animalAt(new Vector(x,y));
                 if (an != null) {
-                    this.drawAnimal(gc, an);
+                    this.drawAnimal(gc, an, an.getGenes().equals(dom));
                 }
             }
         }
@@ -46,6 +89,11 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
         }
     }
 
+    /**
+     * Draws empty map
+     * @param gc Graphics context
+     * @param sim Simulation object
+     */
     void drawMap(GraphicsContext gc, Simulation sim) {
         gc.setFill(Color.DARKORANGE);
         gc.fillRect(0, 0, this.cellSize * params.width, this.cellSize * params.height);
@@ -69,7 +117,13 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
         }
     }
 
-    void drawAnimal(GraphicsContext gc, Animal a) {
+    /**
+     * Draws Animal
+     * @param gc Graphics context
+     * @param a Animal
+     * @param dominant Dominating genome
+     */
+    void drawAnimal(GraphicsContext gc, Animal a, boolean dominant) {
         gc.save();
         gc.rotate(a.getOrient().getDegree());
 
@@ -79,16 +133,26 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
         if (energyPercent > 1) {
             energyPercent = 1.0;
         }
-        this.drawEnergyBar(gc, pos, energyPercent);
-
+        this.drawEnergyBar(gc, pos, energyPercent, dominant && this.drawDominant);
         gc.restore();
     }
 
-    void drawEnergyBar(GraphicsContext gc, Vector pos, double energyPercent) {
+    /**
+     * Draws energy bar
+     * @param gc Graphics context
+     * @param pos Energy bar position
+     * @param energyPercent Percentage of the bar filled
+     * @param dominant does this object has dominating genome
+     */
+    void drawEnergyBar(GraphicsContext gc, Vector pos, double energyPercent, boolean dominant) {
         gc.setLineWidth(8.0);
         gc.setStroke(Color.GREY);
         gc.strokeLine(pos.x, pos.y, pos.x + this.cellSize, pos.y);
-        gc.setStroke(Color.BLUE);
+        if (dominant) {
+            gc.setStroke(Color.RED);
+        } else {
+            gc.setStroke(Color.BLUE);
+        }
         if (energyPercent > 0) {
             gc.strokeLine(pos.x, pos.y, pos.x + (this.cellSize * energyPercent), pos.y);
         }

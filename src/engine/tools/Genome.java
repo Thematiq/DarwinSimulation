@@ -3,20 +3,35 @@ package engine.tools;
 import java.util.*;
 
 public class Genome {
+    private static final Genome ERROR = new Genome(new int[]{25, 1, 1, 1, 1, 1, 1, 1});
     public static final int GENOME_SIZE = 32;
     private final Random r = new Random();
     private final int[] code;
 
     private int[] codePopularity;
 
-    public Genome(int[] code) {
-        if (code.length != GENOME_SIZE) {
-            throw new IllegalArgumentException("Genome length should be 32!");
+    public Genome(int[] popularity) {
+        if (popularity.length != 8) {
+            throw new IllegalArgumentException("Popularity length should be 8!");
         }
-        if (!checkGenome(code)) {
-            throw new IllegalArgumentException("Genome doesn't have every value!");
+        int sum = 0;
+        for (int pop : popularity) {
+            sum += pop;
+            if (pop == 0) {
+                throw new IllegalArgumentException("None popularity can be 0!");
+            }
         }
-        this.code = code;
+        if (sum != GENOME_SIZE) {
+            throw new IllegalArgumentException("Sum of popularities should be 32!");
+        }
+        this.codePopularity = popularity;
+        this.code = new int[GENOME_SIZE];
+        int j = 0;
+        for(int i = 0; i < 8; ++i) {
+            for(int u = 0; u < this.codePopularity[i]; ++u, ++j) {
+                this.code[j] = i;
+            }
+        }
         Arrays.sort(this.code);
         this.calculatePopularity();
     }
@@ -35,24 +50,47 @@ public class Genome {
     }
 
     public Genome(Genome father, Genome mother) {
-        this.code = new int[GENOME_SIZE];
-        int[] cuts = {
-                0, 0, 0, GENOME_SIZE
-        };
-
-        cuts[1] = r.nextInt(GENOME_SIZE-2);
-        cuts[2] = 1 + cuts[1] + r.nextInt(GENOME_SIZE - cuts[1]-1);
-        // Take 2 sequences from father
+        List<Integer> fatherCode = new ArrayList<>();
+        List<Integer> motherCode = new ArrayList<>();
         int motherSequence = r.nextInt(3);
-        for (int i = 0; i < 2; ++i) {
+        this.code = new int[GENOME_SIZE];
+        int[] cuts = { 0, 0, 0, GENOME_SIZE };
+
+        if (this.r.nextBoolean()) {
+            Genome buffer = mother;
+            mother = father;
+            father = buffer;
+        }
+
+        for(int i = 0; i < GENOME_SIZE; ++i) {
+            fatherCode.add(father.code[i]);
+            motherCode.add(mother.code[i]);
+        }
+
+        Collections.shuffle(fatherCode);
+        Collections.shuffle(motherCode);
+
+        cuts[1] = 1 + r.nextInt(GENOME_SIZE - 2);
+        do {
+            cuts[2] = 1 + r.nextInt(GENOME_SIZE - 2);
+        } while(cuts[2] == cuts[1]);
+
+        if (cuts[2] < cuts[1]) {
+            int buffer = cuts[1];
+            cuts[1] = cuts[2];
+            cuts[2] = buffer;
+        }
+
+        for (int i = 0; i < 3; ++i) {
             for (int pos = cuts[i]; pos < cuts[i+1]; ++pos) {
                 if (motherSequence == i) {
-                    this.code[pos] = mother.code[pos];
+                    this.code[pos] = motherCode.get(pos);
                 } else {
-                    this.code[pos] = father.code[pos];
+                    this.code[pos] = fatherCode.get(pos);
                 }
             }
         }
+
         this.repairGenome();
         Arrays.sort(this.code);
         this.calculatePopularity();
@@ -76,8 +114,8 @@ public class Genome {
                 while (true) {
                     int newPos = r.nextInt(GENOME_SIZE);
                     if (counters[this.code[newPos]] > 1) {
-                        this.code[newPos] = i;
                         counters[this.code[newPos]]--;
+                        this.code[newPos] = i;
                         break;
                     }
                 }
@@ -94,9 +132,9 @@ public class Genome {
 
     @Override
     public String toString() {
-        String ans = "";
-        for(int c : code) {
-            ans += " " + String.valueOf(c);
+        String ans = "/";
+        for(int i = 0; i < 8; ++i) {
+            ans += "[" + this.codePopularity[i] + "] / ";
         }
         return ans;
     }

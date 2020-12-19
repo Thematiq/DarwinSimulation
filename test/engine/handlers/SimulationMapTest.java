@@ -14,7 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Mateusz Praski
  */
 public class SimulationMapTest {
-    private final Parameters params = new Parameters(10, 10, 10, 1, 10, (float) 0.2, 0);
+    private final Parameters params = new Parameters(
+            10, 10, 10, 1,
+            10, (float) 0.2, 0
+    );
+
     private SimulationMap testMap;
 
     @BeforeEach

@@ -1,6 +1,9 @@
 package app.windows;
 
 import engine.handlers.Simulation;
+import engine.objects.Animal;
+import engine.tools.AnimalStatistician;
+import engine.tools.Genome;
 import engine.tools.Parameters;
 import engine.tools.SimulationStatistician;
 import javafx.animation.Animation;
@@ -110,6 +113,36 @@ public class DoubleController extends AbstractSimulatorController {
     }
 
     @Override
+    public void newData(AnimalStatistician caller) {
+
+    }
+
+    @Override
+    public void update(SimulationStatistician caller) {
+        if (caller.equals(this.statOne)) {
+            this.simOnePop.setText(String.valueOf(caller.getCurrentAnimals()));
+            this.simOneDay.setText(String.valueOf(caller.getCurrentDay()));
+
+            this.popOneLabel.setText(String.valueOf(caller.getCurrentAnimals()));
+            this.vegOneLabel.setText(String.valueOf(caller.getCurrentVegetation()));
+            this.energyOneLabel.setText(String.valueOf(caller.getCurrentEnergy()));
+            this.lifespanOneLabel.setText(String.valueOf(caller.getCurrentLifespan()));
+
+            super.draw(this.simOne, this.canvasOne, new Genome());
+        } else if (caller.equals(this.statTwo)) {
+            this.simTwoPop.setText(String.valueOf(caller.getCurrentAnimals()));
+            this.simTwoDay.setText(String.valueOf(caller.getCurrentDay()));
+
+            this.popTwoLabel.setText(String.valueOf(caller.getCurrentAnimals()));
+            this.vegTwoLabel.setText(String.valueOf(caller.getCurrentVegetation()));
+            this.energyTwoLabel.setText(String.valueOf(caller.getCurrentEnergy()));
+            this.lifespanTwoLabel.setText(String.valueOf(caller.getCurrentLifespan()));
+
+            super.draw(this.simTwo, this.canvasTwo, new Genome());
+        }
+    }
+
+    @Override
     public void initSimulation(Parameters param) {
         super.params = param;
         this.initDrawer();
@@ -138,30 +171,5 @@ public class DoubleController extends AbstractSimulatorController {
         this.canvasOne.setHeight(super.cellSize * super.params.height);
         this.canvasTwo.setWidth(super.cellSize * super.params.width);
         this.canvasTwo.setHeight(super.cellSize * super.params.height);
-    }
-
-    @Override
-    public void update(SimulationStatistician caller) {
-        if (caller.equals(this.statOne)) {
-            this.simOnePop.setText(String.valueOf(caller.getCurrentAnimals()));
-            this.simOneDay.setText(String.valueOf(caller.getCurrentDay()));
-
-            this.popOneLabel.setText(String.valueOf(caller.getCurrentAnimals()));
-            this.vegOneLabel.setText(String.valueOf(caller.getCurrentVegetation()));
-            this.energyOneLabel.setText(String.valueOf(caller.getCurrentEnergy()));
-            this.lifespanOneLabel.setText(String.valueOf(caller.getCurrentLifespan()));
-
-            super.runDrawer(this.simOne, this.canvasOne);
-        } else if (caller.equals(this.statTwo)) {
-            this.simTwoPop.setText(String.valueOf(caller.getCurrentAnimals()));
-            this.simTwoDay.setText(String.valueOf(caller.getCurrentDay()));
-
-            this.popTwoLabel.setText(String.valueOf(caller.getCurrentAnimals()));
-            this.vegTwoLabel.setText(String.valueOf(caller.getCurrentVegetation()));
-            this.energyTwoLabel.setText(String.valueOf(caller.getCurrentEnergy()));
-            this.lifespanTwoLabel.setText(String.valueOf(caller.getCurrentLifespan()));
-
-            super.runDrawer(this.simTwo, this.canvasTwo);
-        }
     }
 }

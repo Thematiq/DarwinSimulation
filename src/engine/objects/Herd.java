@@ -99,14 +99,14 @@ public class Herd implements IObserverKilled {
      *
      * @return List of strongest Animals on the tile
      */
-    private List<Animal> getStrongest() {
+    List<Animal> getStrongest() {
         List<Animal> strongest = new ArrayList<>();
         Iterator<Animal> iterator = this.animals.descendingIterator();
         int maxEnergy = this.animals.last().getEnergy();
         Animal a;
         while(iterator.hasNext()) {
             a = iterator.next();
-            if(a.getEnergy() < maxEnergy) {
+            if (a.getEnergy() < maxEnergy) {
                 break;
             }
             strongest.add(a);
@@ -118,7 +118,7 @@ public class Herd implements IObserverKilled {
      *
      * @return 2 elements Array of Animals containing potential parents
      */
-    private Animal[] getStrongestCouple() {
+    Animal[] getStrongestCouple() {
         List<Animal> strongest = this.getStrongest();
         Animal first;
         Animal second;

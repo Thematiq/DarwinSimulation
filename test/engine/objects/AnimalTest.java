@@ -17,7 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AnimalTest {
     private final Vector startingVector = new Vector(3, 3);
     private final Vector endingVector = new Vector(1, 1);
-    private final Parameters params = new Parameters();
+    private final Parameters params = new Parameters(
+            10, 10, 100, 1,
+            30, (float)0.5, 10
+    );
+
     private Animal testSubject;
 
     @BeforeEach

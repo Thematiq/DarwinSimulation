@@ -110,10 +110,16 @@ public class Animal {
     }
 
     /**
+     * Sets energy value
+     * @param energy new energy value
+     */
+    public void setEnergy(int energy) { this.energy = energy; }
+
+    /**
      * Changes animal rotation based on a Genome
      */
     public void Rotate() {
-        this.orient = this.genes.getRotation();
+        this.orient = Orientation.translateOrient(this.orient, this.genes.getRotation());
     }
 
     /**
@@ -135,6 +141,8 @@ public class Animal {
      * @param obs new observer
      */
     public void addBreedObserver(IObserverBreed obs) { this.breedObservers.add(obs); }
+
+    public boolean hasBreedObserver(IObserverBreed obs) { return this.breedObservers.contains(obs); }
 
     public Orientation getOrient() {
         return this.orient;
