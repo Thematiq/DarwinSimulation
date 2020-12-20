@@ -14,6 +14,7 @@ public class AnimalStatistician implements IObserverBreed, IObserverKilled, IObs
     private final Animal watchedAnimal;
     private final List<IObserverAnimalStatistics> observerAnimalStatisticsList = new ArrayList<>();
     private final int endDate;
+    private final int startDate;
 
     private boolean running = true;
     private int totalChildren = 0;
@@ -22,6 +23,7 @@ public class AnimalStatistician implements IObserverBreed, IObserverKilled, IObs
     private boolean died = false;
 
     public AnimalStatistician(Simulation sim, Animal a, int duration) {
+        this.startDate = sim.getDay();
         this.endDate = sim.getDay() + duration;
         this.watchedAnimal = a;
         this.watchedAnimal.addBreedObserver(this);
@@ -74,7 +76,7 @@ public class AnimalStatistician implements IObserverBreed, IObserverKilled, IObs
 
     public int getTotalDescendants() { return this.totalDescendants; }
 
-    public int getDeathDay() { return this.deathDay; }
+    public int getDeathDay() { return this.deathDay + this.startDate; }
 
     public boolean hasDied() { return this.died; }
 

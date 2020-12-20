@@ -37,7 +37,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Canvas fx:id="canvasOne" height="351.0" width="422.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Canvas fx:id="canvasOne" height="351.0" onMouseClicked="#canvasOneClicked" width="422.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                   <GridPane prefHeight="250.0" prefWidth="508.0" GridPane.rowIndex="1">
@@ -115,7 +115,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Canvas fx:id="canvasTwo" height="408.0" width="423.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                        <Canvas fx:id="canvasTwo" height="408.0" onMouseClicked="#canvasTwoClicked" width="423.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <GridPane.margin>
                               <Insets />
                            </GridPane.margin>

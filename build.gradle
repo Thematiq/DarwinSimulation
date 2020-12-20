@@ -52,4 +52,13 @@ test {
     }
 }
 
-mainClassName = 'app.Main'
+jar {
+    manifest {
+        attributes "Main-Class" : "app.Main"
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+mainClassName = 'app.Build'

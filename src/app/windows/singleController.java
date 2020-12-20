@@ -118,14 +118,14 @@ public class singleController extends AbstractSimulatorController implements IOb
             if (this.watcherRunning()) {
                 this.labelDesc.setText(super.watchingRunning);
             } else {
-                this.labelDesc.setText(super.Running);
+                this.labelDesc.setText(super.running);
             }
         } else {
             this.timeline.stop();
             if (this.watcherRunning()) {
                 this.labelDesc.setText(super.watchingPaused);
             } else {
-                this.labelDesc.setText(super.Paused);
+                this.labelDesc.setText(super.paused);
             }
         }
     }
@@ -232,9 +232,9 @@ public class singleController extends AbstractSimulatorController implements IOb
             this.labelDayOfDeath.setText(super.stillLiving);
         } else {
             if (this.running()) {
-                this.labelDesc.setText(super.Running);
+                this.labelDesc.setText(super.running);
             } else {
-                this.labelDesc.setText(super.Paused);
+                this.labelDesc.setText(super.paused);
             }
             this.labelDayOfDeath.setText(super.watcherEnded);
         }

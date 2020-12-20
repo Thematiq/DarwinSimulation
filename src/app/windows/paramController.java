@@ -145,7 +145,8 @@ public class paramController implements Initializable {
                 return false;
             }
         }
-        return this.jungleText.getText().charAt(this.jungleText.getText().length() - 1) != '.';
+        return this.jungleText.getText().charAt(this.jungleText.getText().length() - 1) != '.' &&
+                Integer.parseInt(this.startingText.getText()) <= Integer.parseInt(this.widthText.getText()) * Integer.parseInt(this.heightText.getText());
     }
 
     private void spawnSimulationWindow(String window, Parameters params) throws IOException {

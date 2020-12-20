@@ -119,7 +119,7 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
     }
 
     private Genome getGenome(Map<Genome, Integer> pop) {
-        Genome candidate = new Genome();
+        Genome candidate = null;
         int votes = -1;
         for (Genome a : pop.keySet()) {
             if (pop.get(a) > votes) {

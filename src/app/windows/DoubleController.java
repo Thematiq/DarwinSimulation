@@ -10,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
@@ -24,10 +25,13 @@ public class DoubleController extends AbstractSimulatorController {
     private Timeline timeTwo;
     private Genome domOne = new Genome();
     private Genome domTwo = new Genome();
+    private AnimalStatistician localStat;
     int cellSizeOne;
     int cellSizeTwo;
     boolean canGenerate = false;
     boolean generating = false;
+    // True if left sim, false if right
+    boolean leftSim;
     int from;
     int to;
 
@@ -151,12 +155,42 @@ public class DoubleController extends AbstractSimulatorController {
         this.buttonNextOne.setDisable(status);
         this.buttonStartOne.setDisable(status);
         this.buttonStopOne.setDisable(!status);
+        String sim;
+        if (this.leftSim) {
+            sim = "Left sim: ";
+        } else {
+            sim = "Right sim: ";
+        }
         if (status) {
             this.timeOne.play();
+            if (this.watcherRunning()) {
+                this.labelDesc.setText(sim + super.watchingRunning);
+            } else {
+                this.labelDesc.setText(super.running);
+            }
         } else {
             this.timeOne.stop();
+            if (this.watcherRunning()) {
+                this.labelDesc.setText(sim + super.watchingPaused);
+            } else {
+                this.labelDesc.setText(super.paused);
+            }
         }
     }
+
+    boolean watcherRunning() {
+        return this.localStat != null && this.localStat.isRunning();
+    }
+    
+    boolean simOneRunning() {
+        return this.buttonStartOne.isDisabled();
+    }
+
+    boolean simTwoRunning() {
+        return this.buttonStartTwo.isDisabled();
+    }
+
+
 
     private void setStatusTwo(boolean status) {
         this.buttonNextTwo.setDisable(status);
@@ -167,6 +201,38 @@ public class DoubleController extends AbstractSimulatorController {
             this.timeTwo.play();
         } else {
             this.timeTwo.stop();
+        }
+    }
+
+    private int getEndDate() {
+        if (this.textEpoch.getText().equals("")) {
+            return -1;
+        } else {
+            return Integer.parseInt(this.textEpoch.getText());
+        }
+    }
+
+    @FXML
+    private void canvasOneClicked(MouseEvent e) {
+        Vector pos = new Vector((int) (e.getX() / this.cellSizeOne), (int) (e.getY() / this.cellSizeOne));
+        int endDate = this.getEndDate();
+        if (!this.getStatusOne() && this.simOne.animalAt(pos) != null && endDate != -1) {
+            System.out.println(endDate);
+            this.localStat = new AnimalStatistician(this.simOne, this.simOne.animalAt(pos), endDate);
+            this.localStat.addIObserverAnimalStatistics(this);
+            this.newData(this.localStat);
+        }
+    }
+
+    @FXML
+    private void canvasTwoClicked(MouseEvent e) {
+        Vector pos = new Vector((int) (e.getX() / this.cellSizeTwo), (int) (e.getY() / this.cellSizeTwo));
+        int endDate = this.getEndDate();
+        if (!this.getStatusTwo() && this.simTwo.animalAt(pos) != null && endDate != -1) {
+            System.out.println(endDate);
+            this.localStat = new AnimalStatistician(this.simTwo, this.simTwo.animalAt(pos), endDate);
+            this.localStat.addIObserverAnimalStatistics(this);
+            this.newData(this.localStat);
         }
     }
 
@@ -220,6 +286,31 @@ public class DoubleController extends AbstractSimulatorController {
         this.labelDescendants.setText(String.valueOf(caller.getTotalDescendants()));
         if (caller.hasDied()) {
             this.labelDayOfDeath.setText(String.valueOf(caller.getDeathDay()));
+        } else if (this.watcherRunning()) {
+            String sim;
+            if (this.leftSim) {
+                sim = "Left sim: ";
+                if (this.simOneRunning()) {
+                    this.labelDesc.setText(sim + super.watchingRunning);
+                } else {
+                    this.labelDesc.setText(sim + super.watchingPaused);
+                }
+            } else {
+                sim = "Right sim: ";
+                if (this.simTwoRunning()) {
+                    this.labelDesc.setText(sim + super.watchingRunning);
+                } else {
+                    this.labelDesc.setText(sim + super.watchingPaused);
+                }
+            }
+            this.labelDayOfDeath.setText(super.stillLiving);
+        } else {
+            if (this.simTwoRunning() || this.simTwoRunning()) {
+                this.labelDesc.setText(super.running);
+            } else {
+                this.labelDesc.setText(super.paused);
+            }
+            this.labelDayOfDeath.setText(super.watcherEnded);
         }
     }
 

@@ -29,8 +29,8 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
     final String watcherEnded = "Didn't die during watching";
     final String watchingRunning = "Watching / Please stop simulation to choose new animal";
     final String watchingPaused = "Watching / Click on map to choose new animal";
-    final String Paused = "Click on map to choose new animal";
-    final String Running = "Please stop simulation to choose new animal";
+    final String paused = "Click on map to choose new animal";
+    final String running = "Please stop simulation to choose new animal";
     final String gathering = "Waiting for the end of the period";
     final String saved = "Saved";
     final boolean grid = false;
