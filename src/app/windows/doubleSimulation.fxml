@@ -4,6 +4,9 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -11,144 +14,226 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.windows.DoubleController">
   <children>
-      <GridPane prefHeight="753.0" prefWidth="1280.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints maxHeight="576.0" minHeight="10.0" prefHeight="537.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="224.0" minHeight="0.0" prefHeight="156.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Canvas fx:id="canvasOne" height="535.0" width="638.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Canvas fx:id="canvasTwo" height="535.0" width="638.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <GridPane GridPane.rowIndex="1">
+      <SplitPane dividerPositions="0.4, 0.8" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <items>
+            <GridPane>
               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="507.0" minHeight="10.0" prefHeight="498.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="339.0" minHeight="10.0" prefHeight="193.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane fx:id="gridCanvasOne">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Canvas fx:id="canvasOne" height="351.0" width="422.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                     </children>
+                  </GridPane>
+                  <GridPane prefHeight="250.0" prefWidth="508.0" GridPane.rowIndex="1">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Current population:" GridPane.rowIndex="1" />
+                         <Label fx:id="labelPopOne" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                             <GridPane.margin>
+                                 <Insets right="20.0" />
+                             </GridPane.margin>
+                         </Label>
+                        <Label text="Current vegetation:" GridPane.rowIndex="2" />
+                         <Label fx:id="labelVegOne" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                             <GridPane.margin>
+                                 <Insets right="20.0" />
+                             </GridPane.margin>
+                         </Label>
+                        <Label text="Dominant genotype:" GridPane.rowIndex="3" />
+                         <Label fx:id="labelGeneOne" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                             <GridPane.margin>
+                                 <Insets right="20.0" />
+                             </GridPane.margin>
+                         </Label>
+                        <Label text="Mean energy:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                         <Label fx:id="labelEnergyOne" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                             <GridPane.margin>
+                                 <Insets right="20.0" />
+                             </GridPane.margin>
+                         </Label>
+                        <Label text="Mean lifespan:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                         <Label fx:id="labelLifespanOne" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                             <GridPane.margin>
+                                 <Insets right="20.0" />
+                             </GridPane.margin>
+                         </Label>
+                        <Label text="Mean children number:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                         <Label fx:id="labelChildrenOne" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                             <GridPane.margin>
+                                 <Insets right="20.0" />
+                             </GridPane.margin>
+                         </Label>
+                        <Button fx:id="buttonStartOne" mnemonicParsing="false" onAction="#startOne" text="Start" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Button fx:id="buttonStopOne" mnemonicParsing="false" onAction="#stopOne" text="Stop" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Button fx:id="buttonNextOne" mnemonicParsing="false" onAction="#nextOne" text="Next day" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <RadioButton fx:id="radioDominantOne" mnemonicParsing="false" text="Display dominant" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="512.0" minHeight="10.0" prefHeight="500.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="339.0" minHeight="10.0" prefHeight="191.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane fx:id="gridCanvasTwo">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Canvas fx:id="canvasTwo" height="408.0" width="423.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Canvas>
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.rowIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                         <children>
+                             <Label text="Current population:" GridPane.rowIndex="1" />
+                             <Label fx:id="labelPopTwo" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                     <Insets right="20.0" />
+                                 </GridPane.margin>
+                             </Label>
+                             <Label text="Current vegetation:" GridPane.rowIndex="2" />
+                             <Label fx:id="labelVegTwo" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                     <Insets right="20.0" />
+                                 </GridPane.margin>
+                             </Label>
+                             <Label text="Dominant genotype:" GridPane.rowIndex="3" />
+                             <Label fx:id="labelGeneTwo" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                     <Insets right="20.0" />
+                                 </GridPane.margin>
+                             </Label>
+                             <Label text="Mean energy:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                             <Label fx:id="labelEnergyTwo" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                     <Insets right="20.0" />
+                                 </GridPane.margin>
+                             </Label>
+                             <Label text="Mean lifespan:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                             <Label fx:id="labelLifespanTwo" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                     <Insets right="20.0" />
+                                 </GridPane.margin>
+                             </Label>
+                             <Label text="Mean children number:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                             <Label fx:id="labelChildrenTwo" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                     <Insets right="20.0" />
+                                 </GridPane.margin>
+                             </Label>
+                             <Button fx:id="buttonStartTwo" mnemonicParsing="false" onAction="#startTwo" text="Start" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                             <Button fx:id="buttonStopTwo" mnemonicParsing="false" onAction="#stopTwo" text="Stop" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                             <Button fx:id="buttonNextTwo" mnemonicParsing="false" onAction="#nextTwo" text="Next day" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <RadioButton fx:id="radioDominantTwo" mnemonicParsing="false" text="Display dominant" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+            <GridPane>
+              <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Current population:" GridPane.rowIndex="1" />
-                   <Label fx:id="popOneLabel" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-                       <GridPane.margin>
-                           <Insets right="20.0" />
-                       </GridPane.margin>
-                   </Label>
-                  <Label text="Current vegetation:" GridPane.rowIndex="2" />
-                   <Label fx:id="vegOneLabel" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                       <GridPane.margin>
-                           <Insets right="20.0" />
-                       </GridPane.margin>
-                   </Label>
-                  <Label text="Dominant genotype:" GridPane.rowIndex="3" />
-                   <Label fx:id="geneOneLabel" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                       <GridPane.margin>
-                           <Insets right="20.0" />
-                       </GridPane.margin>
-                   </Label>
-                  <Label text="Average energy:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                   <Label fx:id="energyOneLabel" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-                       <GridPane.margin>
-                           <Insets right="20.0" />
-                       </GridPane.margin>
-                   </Label>
-                  <Label text="Average lifespan:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                   <Label fx:id="lifespanOneLabel" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                       <GridPane.margin>
-                           <Insets right="20.0" />
-                       </GridPane.margin>
-                   </Label>
-                  <Label text="Average children number:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                   <Label fx:id="childrenOneLabel" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                       <GridPane.margin>
-                           <Insets right="20.0" />
-                       </GridPane.margin>
-                   </Label>
-                  <Button fx:id="startOneButton" onAction="#startOne" mnemonicParsing="false" text="Start" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Button fx:id="stopOneButton" onAction="#stopOne" mnemonicParsing="false" text="Stop" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Button fx:id="nextOneButton" onAction="#nextOne" mnemonicParsing="false" text="Next day" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <RadioButton fx:id="radioLeftSim" mnemonicParsing="false" text="Left sim" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                  <RadioButton fx:id="radioRightSim" mnemonicParsing="false" text="Right sim" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
+                  <Label text="Please pause simulation to choose an animal" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+                  <Label text="Number of ages:" GridPane.rowIndex="1" />
+                  <Label text="Total children:" GridPane.rowIndex="2" />
+                  <Label text="Total descendants:" GridPane.rowIndex="3" />
+                  <Label text="Day of death:" GridPane.rowIndex="4" />
+                  <Label fx:id="labelDayOfDeath" text="Haven't died yet" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                  <Label fx:id="labelDescendants" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                  <Label fx:id="labelChildren" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                  <TextField fx:id="textEpoch" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate statistics for next N ages:" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of ages:" GridPane.rowIndex="7" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Filename:" GridPane.rowIndex="8" />
+                  <Label fx:id="labelDesc" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+                  <TextField fx:id="textStatEpoch" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <TextField fx:id="textFilename" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <Button mnemonicParsing="false" text="Generate" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
                </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
             </GridPane>
-            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-                   <children>
-                       <Label text="Current population:" GridPane.rowIndex="1" />
-                       <Label fx:id="popTwoLabel" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-                           <GridPane.margin>
-                               <Insets right="20.0" />
-                           </GridPane.margin>
-                       </Label>
-                       <Label text="Current vegetation:" GridPane.rowIndex="2" />
-                       <Label fx:id="vegTwoLabel" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                           <GridPane.margin>
-                               <Insets right="20.0" />
-                           </GridPane.margin>
-                       </Label>
-                       <Label text="Dominant genotype:" GridPane.rowIndex="3" />
-                       <Label fx:id="geneTwoLabel" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                           <GridPane.margin>
-                               <Insets right="20.0" />
-                           </GridPane.margin>
-                       </Label>
-                       <Label text="Average energy:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                       <Label fx:id="energyTwoLabel" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-                           <GridPane.margin>
-                               <Insets right="20.0" />
-                           </GridPane.margin>
-                       </Label>
-                       <Label text="Average lifespan:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                       <Label fx:id="lifespanTwoLabel" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                           <GridPane.margin>
-                               <Insets right="20.0" />
-                           </GridPane.margin>
-                       </Label>
-                       <Label text="Average children number:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                       <Label fx:id="childrenTwoLabel" text="XYZ" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                           <GridPane.margin>
-                               <Insets right="20.0" />
-                           </GridPane.margin>
-                       </Label>
-                       <Button fx:id="startTwoButton" onAction="#startTwo" mnemonicParsing="false" text="Start" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                       <Button fx:id="stopTwoButton" onAction="#stopTwo" mnemonicParsing="false" text="Stop" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                       <Button fx:id="nextTwoButton" onAction="#nextTwo" mnemonicParsing="false" text="Next day" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-               </children>
-            </GridPane>
-         </children>
-      </GridPane>
+        </items>
+      </SplitPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
       <children>
         <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="[S1] Day:" textFill="#5f5f5f" HBox.hgrow="ALWAYS">
           <font>
-            <Font size="15.0"/>
+            <Font size="15.0" />
           </font>
                <HBox.margin>
                   <Insets left="20.0" />
                </HBox.margin>
         </Label>
-            <Label fx:id="simOneDay" text="XYZ" textFill="#5f5f5f">
+            <Label fx:id="labelDayOneBottom" text="XYZ" textFill="#5f5f5f">
                <font>
                   <Font size="15.0" />
                </font>
@@ -158,7 +243,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="simOnePop" text="XYZ" textFill="#5f5f5f">
+            <Label fx:id="labelPopOneBottom" text="XYZ" textFill="#5f5f5f">
                <font>
                   <Font size="15.0" />
                </font>
@@ -169,7 +254,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="simTwoDay" text="XYZ" textFill="#5f5f5f">
+            <Label fx:id="labelDayTwoBottom" text="XYZ" textFill="#5f5f5f">
                <font>
                   <Font size="15.0" />
                </font>
@@ -179,7 +264,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="simTwoPop" text="XYZ" textFill="#5f5f5f">
+            <Label fx:id="labelPopTwoBottom" text="XYZ" textFill="#5f5f5f">
                <font>
                   <Font size="15.0" />
                </font>

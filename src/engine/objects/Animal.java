@@ -1,6 +1,7 @@
 package engine.objects;
 
 import engine.observers.IObserverBreed;
+import engine.observers.IObserverEnergyChanged;
 import engine.observers.IObserverKilled;
 import engine.observers.IObserverPositionChanged;
 import engine.tools.Genome;
@@ -21,6 +22,7 @@ public class Animal {
     private final List<IObserverPositionChanged> positionObservers = new ArrayList<>();
     private final List<IObserverKilled> killedObservers = new ArrayList<>();
     private final List<IObserverBreed> breedObservers = new ArrayList<>();
+    private final List<IObserverEnergyChanged> energyObservers = new ArrayList<>();
 
     private int energy = 0;
     private int days = 0;
@@ -88,8 +90,14 @@ public class Animal {
      * Calls all observers, that animal have been killed
      */
     public void kill() {
-        for(IObserverKilled o : this.killedObservers) {
+        for(IObserverKilled o : new ArrayList<>(this.killedObservers)) {
             o.killed(this);
+        }
+    }
+
+    private void energyChanged(int oldVal) {
+        for(IObserverEnergyChanged obs : this.energyObservers) {
+            obs.energyChanged(this, oldVal);
         }
     }
 
@@ -99,6 +107,7 @@ public class Animal {
      */
     public void eat(int energy) {
         this.energy += energy;
+        this.energyChanged(this.energy - energy);
     }
 
     /**
@@ -107,13 +116,18 @@ public class Animal {
      */
     public void loseEnergy(int energy) {
         this.energy -= energy;
+        this.energyChanged(this.energy + energy);
     }
 
     /**
      * Sets energy value
      * @param energy new energy value
      */
-    public void setEnergy(int energy) { this.energy = energy; }
+    public void setEnergy(int energy) {
+        int oldVal = this.energy;
+        this.energy = energy;
+        this.energyChanged(oldVal);
+    }
 
     /**
      * Changes animal rotation based on a Genome
@@ -136,11 +150,17 @@ public class Animal {
      */
     public void addKilledObserver(IObserverKilled obs) { this.killedObservers.add(obs); }
 
+    public void removeKilledObserver(IObserverKilled obs) { this.killedObservers.remove(obs); }
+
     /**
      * Adds new breed() observer
      * @param obs new observer
      */
     public void addBreedObserver(IObserverBreed obs) { this.breedObservers.add(obs); }
+
+    public void addEnergyObserver(IObserverEnergyChanged obs) { this.energyObservers.add(obs); }
+
+    public void removeEnergyObserver(IObserverEnergyChanged obs) { this.energyObservers.remove(obs); }
 
     public boolean hasBreedObserver(IObserverBreed obs) { return this.breedObservers.contains(obs); }
 

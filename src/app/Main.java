@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -18,6 +19,7 @@ public class Main extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setTitle("Darwin Simulator");
+        primaryStage.getIcons().add(new Image("file:resources/icon.png"));
         primaryStage.setScene(scene);
         primaryStage.show();
     }

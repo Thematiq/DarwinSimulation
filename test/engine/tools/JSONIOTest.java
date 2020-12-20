@@ -7,11 +7,11 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ParametersTest {
+public class JSONIOTest {
     @Test
     public void fromFileTest() {
         try {
-            Parameters fromFile = new Parameters("test/testFile.json");
+            Parameters fromFile = JSONIO.readParameters("test/testFile.json");
             Parameters actual = new Parameters(
                     10, 10, 10, 1,
                     10, (float) 0.2, 10

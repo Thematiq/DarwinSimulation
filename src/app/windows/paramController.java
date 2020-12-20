@@ -1,5 +1,6 @@
 package app.windows;
 
+import engine.tools.JSONIO;
 import engine.tools.Parameters;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +25,6 @@ import java.util.regex.Pattern;
 
 public class paramController implements Initializable {
     private boolean single;
-    private ToggleGroup simulationGroup;
 
     @FXML
     private TextField widthText;
@@ -76,7 +76,7 @@ public class paramController implements Initializable {
 
     @FXML
     void startSim() throws IOException {
-        if (true) {
+        if (this.allParams()) {
             if (this.single) {
                 this.spawnSimulationWindow("singleSimulation.fxml", this.scrapParams());
             } else {
@@ -94,7 +94,7 @@ public class paramController implements Initializable {
             fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("JSON files", "*.json"));
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
             String path = fileChooser.showOpenDialog(currentStage).getPath();
-            Parameters params = new Parameters(path);
+            Parameters params = JSONIO.readParameters(path);
             if (this.single) {
                 this.spawnSimulationWindow("singleSimulation.fxml", params);
             } else {
@@ -109,23 +109,22 @@ public class paramController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.widthText.setTextFormatter(new TextFormatter<Object>(this::numericChange));
-        this.heightText.setTextFormatter(new TextFormatter<Object>(this::numericChange));
-        this.energyText.setTextFormatter(new TextFormatter<Object>(this::numericChange));
-        this.costText.setTextFormatter(new TextFormatter<Object>(this::numericChange));
-        this.plantText.setTextFormatter(new TextFormatter<Object>(this::numericChange));
-        this.startingText.setTextFormatter(new TextFormatter<Object>(this::numericChange));
-        this.jungleText.setTextFormatter(new TextFormatter<Object>(this::floatingChange));
+        this.widthText.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.heightText.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.energyText.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.costText.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.plantText.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.startingText.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.jungleText.setTextFormatter(new TextFormatter<>(this::floatingChange));
 
         this.single = true;
-        this.simulationGroup = new ToggleGroup();
-        this.singleRadio.setToggleGroup(this.simulationGroup);
-        this.doubleRadio.setToggleGroup(this.simulationGroup);
+        ToggleGroup simulationGroup = new ToggleGroup();
+        this.singleRadio.setToggleGroup(simulationGroup);
+        this.doubleRadio.setToggleGroup(simulationGroup);
         this.singleRadio.setSelected(true);
     }
 
     private Parameters scrapParams() {
-        /*
         int width = Integer.parseInt(this.widthText.getText());
         int height = Integer.parseInt(this.heightText.getText());
         int startEnergy = Integer.parseInt(this.energyText.getText());
@@ -134,8 +133,6 @@ public class paramController implements Initializable {
         int startingAnimals = Integer.parseInt(this.startingText.getText());
         float jungleRation = Float.parseFloat(this.jungleText.getText());
         return new Parameters(width, height, startEnergy, moveEnergy, plantEnergy, jungleRation, startingAnimals);
-         */
-        return new Parameters();
     }
 
     private boolean allParams() {
@@ -148,10 +145,7 @@ public class paramController implements Initializable {
                 return false;
             }
         }
-        if (this.jungleText.getText().charAt(this.jungleText.getText().length() - 1) == '.') {
-            return false;
-        }
-        return true;
+        return this.jungleText.getText().charAt(this.jungleText.getText().length() - 1) != '.';
     }
 
     private void spawnSimulationWindow(String window, Parameters params) throws IOException {

@@ -17,16 +17,14 @@ import java.util.*;
  */
 public class SimulationMap implements IObserverPositionChanged, IObserverKilled {
     private final Parameters params;
-    private final Vector jungleBottomLeft;
-    private final Vector jungleTopRight;
+    final Vector jungleBottomLeft;
+    final Vector jungleTopRight;
     private final Vector bottomLeft = new Vector(0, 0);
     private final Vector topRight;
     private final Random rand = new Random();
     private final Map<Vector, Grass> bushes = new HashMap<>();
     private final List<Animal> animalList = new ArrayList<>();
     private final Herd[][] herdsTable;
-    private final int maxJungleBushes;
-    private final int maxSteppeBushes;
 
     private int livingAnimals = 0;
     private int deadAnimals = 0;
@@ -53,9 +51,6 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         Vector middle = new Vector(params.width / 2, params.height / 2);
         this.jungleBottomLeft = middle.add(new Vector(- (jungleWidth/2), - (jungleHeight/2)));
         this.jungleTopRight = middle.add(new Vector((jungleWidth/2)-1, (jungleHeight/2)-1));
-
-        this.maxJungleBushes = (this.jungleTopRight.x - this.jungleBottomLeft.x + 1) * (this.jungleTopRight.y - this.jungleBottomLeft.y + 1);
-        this.maxSteppeBushes = params.width * params.height - this.maxJungleBushes;
 
         for(int i = 0; i < params.startingAnimals; ++i) {
             this.spawnAnimal();
@@ -129,19 +124,60 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         }
     }
 
+    Grass[] getGrass() {
+        Grass[] g = new Grass[2];
+        List<Vector> potentialJungle = new ArrayList<>();
+        List<Vector> potentialSteppe = new ArrayList<>();
+        for (int x = 0; x <= this.getMaxX(); ++x) {
+            for (int y = 0; y <= this.getMaxY(); ++y) {
+                if (this.isEmpty(new Vector(x, y))) {
+                    if(this.isJungle(new Vector(x, y))) {
+                        potentialJungle.add(new Vector(x, y));
+                    } else {
+                        potentialSteppe.add(new Vector(x, y));
+                    }
+                }
+            }
+        }
+        if (potentialJungle.size() == 0) {
+            g[0] = null;
+        } else {
+            g[0] = new Grass(potentialJungle.get(this.rand.nextInt(potentialJungle.size())));
+        }
+        if (potentialSteppe.size() == 0) {
+            g[1] = null;
+        } else {
+            g[1] = new Grass(potentialSteppe.get(this.rand.nextInt(potentialSteppe.size())));
+        }
+        return g;
+    }
+
+    Animal getAnimal() {
+        Vector pos;
+        do {
+            pos = Generators.randomVector(this.rand, this.bottomLeft, this.topRight);
+        } while(this.animalAt(pos) != null);
+        return new Animal(pos, this.params);
+    }
+
     /**
      * Spawns new animal on a free tile
      */
     public void spawnAnimal() {
-        this.addAnimal(Generators.getAnimal(this, this.rand));
+        this.addAnimal(this.getAnimal());
     }
 
     /**
      * Spawns one grass in the steppe and in the jungle
      */
     public void spawnGrass() {
-        this.addGrass(Generators.getJungleGrass(this, this.rand));
-        this.addGrass(Generators.getSteppeGrass(this, this.rand));
+        /*
+        this.addGrass(this.getJungleGrass());
+        this.addGrass(this.getSteppeGrass());
+        */
+        Grass[] g = this.getGrass();
+        this.addGrass(g[0]);
+        this.addGrass(g[1]);
     }
 
     @Override
@@ -175,7 +211,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         return this.bushes.get(pos) != null;
     }
 
-    public boolean isEmpty(Vector pos) { return !this.isGrass(pos) && !this.hasAnimal(pos); }
+    public boolean isEmpty(Vector pos) { return !this.isGrass(pos) || !this.hasAnimal(pos); }
 
     /**
      *
@@ -190,13 +226,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         return Collections.unmodifiableList(this.animalList);
     }
 
-    public Vector getBottomLeft() { return this.bottomLeft; }
-
     public Vector getTopRight() { return this.topRight; }
-
-    public Vector getJungleBottomLeft() { return this.jungleBottomLeft; }
-
-    public Vector getJungleTopRight() { return this.jungleTopRight; }
 
     public Parameters getParams() { return this.params; }
 
@@ -207,10 +237,6 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     public int getSteppeBushes() { return this.steppeBushes; }
 
     public int getJungleBushes() { return this.jungleBushes; }
-
-    public int getMaxJungleBushes() { return this.maxJungleBushes; }
-
-    public int getMaxSteppeBushes() { return this.maxSteppeBushes; }
 
     public int getMaxX() { return this.topRight.x; }
 

@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractSimulatorController implements IObserverSimulationStatistics, IObserverAnimalStatistics {
     final Pattern numericPattern = Pattern.compile("^([1-9][0-9]*)?$");
+    final Pattern filenamePattern = Pattern.compile("^[^<>:;,?\"*|/]+$");
     final Image animal = new Image("file:resources/animal.png");
     final Image flower = new Image("file:resources/flower.png");
     final String stillLiving = "Haven't died yet";
@@ -29,15 +30,25 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
     final String watchingPaused = "Watching / Click on map to choose new animal";
     final String Paused = "Click on map to choose new animal";
     final String Running = "Please stop simulation to choose new animal";
+    final String gathering = "Waiting for the end of the period";
+    final String saved = "Saved";
     final boolean grid = false;
-    final int dayLength = 200;
+    final int dayLength = 10;
 
     Parameters params;
     boolean drawDominant = false;
     int cellSize;
 
     Change numericChange(Change change) {
-        if(numericPattern.matcher(change.getControlNewText()).matches()) {
+        if (numericPattern.matcher(change.getControlNewText()).matches()) {
+            return change;
+        } else {
+            return null;
+        }
+    }
+
+    Change filenameChange(Change change) {
+        if (filenamePattern.matcher(change.getControlNewText()).matches()) {
             return change;
         } else {
             return null;
@@ -55,6 +66,7 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
      * @param caller Calling statistician
      */
     public abstract void update(SimulationStatistician caller);
+
 
     /**
      * IObserverAnimalStatistic handler

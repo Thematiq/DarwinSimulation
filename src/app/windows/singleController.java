@@ -7,6 +7,7 @@ import engine.tools.*;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,7 +26,6 @@ import javafx.util.Duration;
  * @author Mateusz Praski
  */
 public class singleController extends AbstractSimulatorController implements IObserverSimulationStatistics {
-
     AnimalStatistician localStat;
     SimulationStatistician stat;
     Simulation sim;
@@ -34,6 +34,7 @@ public class singleController extends AbstractSimulatorController implements IOb
     Timeline timeline;
     XYChart.Series<Number, Number> vegetation;
     ObservableList<PieChart.Data> pieChardData;
+    boolean canGenerate = false;
 
     @FXML
     private Label labelPop;
@@ -62,7 +63,13 @@ public class singleController extends AbstractSimulatorController implements IOb
     @FXML
     private Label labelDesc;
     @FXML
+    private Label labelGenerate;
+    @FXML
     private TextField textEpoch;
+    @FXML
+    private TextField textStatEpoch;
+    @FXML
+    private TextField textFilename;
     @FXML
     private RadioButton radioDisplayDominant;
     @FXML
@@ -71,6 +78,8 @@ public class singleController extends AbstractSimulatorController implements IOb
     private Button buttonStop;
     @FXML
     private Button buttonNextDay;
+    @FXML
+    private Button buttonGenerate;
     @FXML
     private LineChart<Number, Number> chartOne;
     @FXML
@@ -87,10 +96,15 @@ public class singleController extends AbstractSimulatorController implements IOb
         super.draw(this.sim, this.canvasSim, this.dominant);
     }
 
+    private void listenText(Observable observable) {
+        this.canGenerate = !this.textStatEpoch.getText().equals("") && !this.textFilename.getText().equals("");
+    }
+
     private void setStatus(boolean status) {
         this.buttonStart.setDisable(status);
         this.buttonStop.setDisable(!status);
         this.buttonNextDay.setDisable(status);
+        this.buttonGenerate.setDisable(status && !this.canGenerate);
         if(status) {
             this.timeline.play();
             if (this.watcherRunning()) {
@@ -106,6 +120,11 @@ public class singleController extends AbstractSimulatorController implements IOb
                 this.labelDesc.setText(super.Paused);
             }
         }
+    }
+
+    @FXML
+    private void newFileStats() {
+
     }
 
     @FXML
@@ -236,8 +255,12 @@ public class singleController extends AbstractSimulatorController implements IOb
         this.initCharts();
         this.initDrawer();
         this.textEpoch.setTextFormatter(new TextFormatter<>(super::numericChange));
+        this.textStatEpoch.setTextFormatter(new TextFormatter<>(super::numericChange));
+        this.textFilename.setTextFormatter(new TextFormatter<>(super::filenameChange));
         this.gridCanvas.widthProperty().addListener(this::listenCanvasResize);
         this.gridCanvas.heightProperty().addListener(this::listenCanvasResize);
+        this.textFilename.textProperty().addListener(this::listenText);
+        this.textStatEpoch.textProperty().addListener(this::listenText);
 
         this.sim = new Simulation(this.params);
         this.stat = new SimulationStatistician(this.sim);

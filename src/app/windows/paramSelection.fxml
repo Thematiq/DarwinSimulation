@@ -12,9 +12,9 @@
    <children>
       <AnchorPane maxHeight="490.0" maxWidth="298.0" minHeight="490.0" minWidth="298.0" prefHeight="490.0" prefWidth="298.0">
          <children>
-            <Button layoutX="14.0" layoutY="431.0" mnemonicParsing="false" onAction="#startSim" prefHeight="39.0" prefWidth="136.0" text="Start">
+            <Button layoutX="14.0" layoutY="431.0" mnemonicParsing="false" onAction="#startSim" prefHeight="39.0" prefWidth="129.0" text="Start">
                <font>
-                  <Font size="18.0" />
+                  <Font size="14.0" />
                </font>
             </Button>
             <Label layoutX="61.0" layoutY="14.0" text="DarwinSimulator">
@@ -22,9 +22,9 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Button layoutX="149.0" layoutY="431.0" mnemonicParsing="false" onAction="#readFile" text="Read from file">
+            <Button layoutX="156.0" layoutY="431.0" mnemonicParsing="false" onAction="#readFile" prefHeight="39.0" prefWidth="129.0" text="Read from file">
                <font>
-                  <Font size="18.0" />
+                  <Font size="14.0" />
                </font>
             </Button>
             <Label layoutX="14.0" layoutY="49.0" text="Parameters">

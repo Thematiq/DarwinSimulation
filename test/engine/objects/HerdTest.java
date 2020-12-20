@@ -57,15 +57,19 @@ public class HerdTest {
 
     @Test
     public void makeLoveTest() {
-
+        testHerd = new Herd(herdParams);
+        assertNull(testHerd.makeLove());
+        testHerd.addAnimal(testAnimals[0]);
+        assertNull(testHerd.makeLove());
+        testHerd.addAnimal(testAnimals[1]);
+        testAnimals[0].setEnergy(1);
+        assertNull(testHerd.makeLove());
+        testAnimals[0].setEnergy(200);
+        assertNotNull(testHerd.makeLove());
     }
 
     @Test
     public void getStrongestTest() {
-        for (Animal a : testAnimals) {
-            System.out.println(a.getEnergy());
-        }
-        System.out.println(testHerd.getStrongest().get(0).getEnergy());;
         assertEquals(testHerd.getStrongest().size(), 5);
         testAnimals[2].setEnergy(200);
         assertEquals(testHerd.getStrongest().size(), 1);
@@ -78,6 +82,29 @@ public class HerdTest {
 
     @Test
     public void getStrongestCoupleTest() {
+        testAnimals[0].setEnergy(300);
+        testAnimals[1].setEnergy(300);
+        Animal[] couple = testHerd.getStrongestCouple();
+        if (couple[0] == testAnimals[0]) {
+            assertEquals(testHerd.getStrongestCouple()[0], testAnimals[0]);
+            assertEquals(testHerd.getStrongestCouple()[1], testAnimals[1]);
+        } else {
+            assertEquals(testHerd.getStrongestCouple()[0], testAnimals[1]);
+            assertEquals(testHerd.getStrongestCouple()[1], testAnimals[0]);
+        }
+        testAnimals[1].setEnergy(400);
+        testAnimals[2].setEnergy(500);
+        assertEquals(testHerd.getStrongestCouple()[0], testAnimals[2]);
+        assertEquals(testHerd.getStrongestCouple()[1], testAnimals[1]);
+        testHerd = new Herd(herdParams);
+        assertNull(testHerd.getStrongestCouple());
+    }
 
+    @Test
+    public void getAnimalTest() {
+        testHerd = new Herd(herdParams);
+        assertNull(testHerd.getAnimal());
+        testHerd.addAnimal(testAnimals[0]);
+        assertEquals(testHerd.getAnimal(), testAnimals[0]);
     }
 }

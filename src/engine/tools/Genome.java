@@ -3,7 +3,6 @@ package engine.tools;
 import java.util.*;
 
 public class Genome {
-    private static final Genome ERROR = new Genome(new int[]{25, 1, 1, 1, 1, 1, 1, 1});
     public static final int GENOME_SIZE = 32;
     private final Random r = new Random();
     private final int[] code;
@@ -132,11 +131,11 @@ public class Genome {
 
     @Override
     public String toString() {
-        String ans = "/";
+        StringBuilder ans = new StringBuilder("/");
         for(int i = 0; i < 8; ++i) {
-            ans += "[" + this.codePopularity[i] + "] / ";
+            ans.append("[").append(this.codePopularity[i]).append("]/");
         }
-        return ans;
+        return ans.toString();
     }
 
     @Override

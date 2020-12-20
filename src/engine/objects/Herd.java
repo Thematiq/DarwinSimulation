@@ -1,5 +1,6 @@
 package engine.objects;
 
+import engine.observers.IObserverEnergyChanged;
 import engine.observers.IObserverKilled;
 import engine.tools.Parameters;
 
@@ -9,11 +10,13 @@ import java.util.*;
  * Class representing Herd (a group of animals on a single tile) and handling events on a tile
  * @author Mateusz Praski
  */
-public class Herd implements IObserverKilled {
-    private final Parameters params;
-    private final Random rand = new Random();
-    private final Comparator<Animal> animalComparator = Comparator.comparing(Animal::getEnergy);
-    private final TreeSet<Animal> animals = new TreeSet<>(animalComparator);
+public class Herd implements IObserverKilled, IObserverEnergyChanged {
+    final Parameters params;
+    final Random rand = new Random();
+    final TreeSet<Integer> energies = new TreeSet<>();
+    final Map<Integer, List<Animal>> animals = new HashMap<>();
+
+    int herdSize = 0;
 
     /**
      * Creates new herd
@@ -32,7 +35,7 @@ public class Herd implements IObserverKilled {
         if (this.empty()) {
             return false;
         }
-        List<Animal> strongest = this.getStrongest();
+        List<Animal> strongest = new ArrayList<>(this.getStrongest());
         int unitPerAnimal = this.params.plantEnergy / strongest.size();
         for(Animal a : strongest) {
             a.eat(unitPerAnimal);
@@ -63,7 +66,7 @@ public class Herd implements IObserverKilled {
      * @return True if herd is empty
      */
     public boolean empty() {
-        return this.animals.size() == 0;
+        return this.herdSize == 0;
     }
 
     /**
@@ -71,7 +74,14 @@ public class Herd implements IObserverKilled {
      * @param a Animal
      */
     public void removeAnimal(Animal a) {
-        this.animals.remove(a);
+        this.animals.get(a.getEnergy()).remove(a);
+        if (this.animals.get(a.getEnergy()).size() == 0) {
+            this.animals.remove(a.getEnergy());
+            this.energies.remove(a.getEnergy());
+        }
+        this.herdSize--;
+        a.removeEnergyObserver(this);
+        a.removeKilledObserver(this);
     }
 
     /**
@@ -79,8 +89,12 @@ public class Herd implements IObserverKilled {
      * @param a Animal
      */
     public void addAnimal(Animal a) {
+        this.animals.computeIfAbsent(a.getEnergy(), t -> new ArrayList<>());
+        this.energies.add(a.getEnergy());
+        this.herdSize++;
+        this.animals.get(a.getEnergy()).add(a);
         a.addKilledObserver(this);
-        this.animals.add(a);
+        a.addEnergyObserver(this);
     }
 
     /**
@@ -88,11 +102,11 @@ public class Herd implements IObserverKilled {
      * @return Strongest Animal on a tile
      */
     public Animal getAnimal() {
-        if (!this.empty()) {
-            return animals.last();
-        } else {
+        if (this.herdSize == 0) {
             return null;
         }
+        List<Animal> a = this.animals.get(this.energies.last());
+        return a.get(this.rand.nextInt(a.size()));
     }
 
     /**
@@ -100,18 +114,7 @@ public class Herd implements IObserverKilled {
      * @return List of strongest Animals on the tile
      */
     List<Animal> getStrongest() {
-        List<Animal> strongest = new ArrayList<>();
-        Iterator<Animal> iterator = this.animals.descendingIterator();
-        int maxEnergy = this.animals.last().getEnergy();
-        Animal a;
-        while(iterator.hasNext()) {
-            a = iterator.next();
-            if (a.getEnergy() < maxEnergy) {
-                break;
-            }
-            strongest.add(a);
-        }
-        return strongest;
+        return this.animals.get(this.energies.last());
     }
 
     /**
@@ -119,26 +122,44 @@ public class Herd implements IObserverKilled {
      * @return 2 elements Array of Animals containing potential parents
      */
     Animal[] getStrongestCouple() {
-        List<Animal> strongest = this.getStrongest();
-        Animal first;
-        Animal second;
-        if(strongest.size() > 2) {
-            first = strongest.get(this.rand.nextInt(strongest.size()));
-            strongest.remove(first);
-            second = strongest.get(this.rand.nextInt(strongest.size()));
-        } else if (strongest.size() == 2) {
-            first = strongest.get(0);
-            second = strongest.get(1);
-        } else {
-            Iterator<Animal> iterator = this.animals.descendingIterator();
-            first = iterator.next();
-            second = iterator.next();
+        Animal father;
+        Animal mother;
+        if (herdSize < 2) {
+            return null;
         }
-        return new Animal[]{first, second};
+        List<Animal> a = getStrongest();
+        if (a.size() > 2) {
+            father = a.get(this.rand.nextInt(a.size()));
+            do {
+                mother = a.get(this.rand.nextInt(a.size()));
+            } while(mother == father);
+            return new Animal[] {father, mother};
+        } else if (a.size() == 2) {
+            return new Animal[] {a.get(0), a.get(1) };
+        } else {
+            father = a.get(0);
+            Iterator<Integer> i = this.energies.descendingIterator();
+            i.next(); // drop strongest
+            a = this.animals.get(i.next());
+            mother = a.get(this.rand.nextInt(a.size()));
+            return new Animal[] {father, mother};
+        }
     }
 
     @Override
     public void killed(Animal a) {
-        this.animals.remove(a);
+        this.removeAnimal(a);
+    }
+
+    @Override
+    public void energyChanged(Animal caller, int oldVal) {
+        this.animals.get(oldVal).remove(caller);
+        if (this.animals.get(oldVal).size() == 0) {
+            this.animals.remove(oldVal);
+            this.energies.remove(oldVal);
+        }
+        this.animals.computeIfAbsent(caller.getEnergy(), t -> new ArrayList<>());
+        this.animals.get(caller.getEnergy()).add(caller);
+        this.energies.add(caller.getEnergy());
     }
 }

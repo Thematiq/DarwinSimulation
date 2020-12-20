@@ -134,7 +134,7 @@ public class Simulation {
     }
 
     public int getVegetation() {
-        return this.map.getSteppeBushes() + this.map.getMaxJungleBushes();
+        return this.map.getSteppeBushes() + this.map.getJungleBushes();
     }
 
     public int getGraveyard() { return this.map.getDeadAnimals(); }
