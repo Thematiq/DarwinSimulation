@@ -5,9 +5,13 @@
 
 <a type="anchor" id="toc-bullet"></a>
 ## Table of contents
+
 [About the project](#about-bullet)
+
 [Parameters](#params-bullet)
+
 [Additional features](#ui-bullet)
+
 [Notes](#notes-bullet)
 
 ---
