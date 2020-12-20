@@ -93,7 +93,7 @@
                         <Button fx:id="buttonStartOne" mnemonicParsing="false" onAction="#startOne" text="Start" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Button fx:id="buttonStopOne" mnemonicParsing="false" onAction="#stopOne" text="Stop" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                         <Button fx:id="buttonNextOne" mnemonicParsing="false" onAction="#nextOne" text="Next day" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <RadioButton fx:id="radioDominantOne" mnemonicParsing="false" text="Display dominant" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <RadioButton fx:id="radioDominantOne" mnemonicParsing="false" onAction="#ToggleDisplayDominantOne" text="Display dominant" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                </children>
@@ -175,7 +175,7 @@
                              <Button fx:id="buttonStartTwo" mnemonicParsing="false" onAction="#startTwo" text="Start" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                              <Button fx:id="buttonStopTwo" mnemonicParsing="false" onAction="#stopTwo" text="Stop" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                              <Button fx:id="buttonNextTwo" mnemonicParsing="false" onAction="#nextTwo" text="Next day" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <RadioButton fx:id="radioDominantTwo" mnemonicParsing="false" text="Display dominant" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <RadioButton fx:id="radioDominantTwo" mnemonicParsing="false" onAction="#ToggleDisplayDominantTwo" text="Display dominant" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                </children>
@@ -200,7 +200,7 @@
                <children>
                   <RadioButton fx:id="radioLeftSim" mnemonicParsing="false" text="Left sim" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
                   <RadioButton fx:id="radioRightSim" mnemonicParsing="false" text="Right sim" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
-                  <Label text="Please pause simulation to choose an animal" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+                  <Label fx:id="labelDesc" text="Please pause simulation to choose an animal" textAlignment="CENTER" wrapText="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
                   <Label text="Number of ages:" GridPane.rowIndex="1" />
                   <Label text="Total children:" GridPane.rowIndex="2" />
                   <Label text="Total descendants:" GridPane.rowIndex="3" />
@@ -212,10 +212,10 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate statistics for next N ages:" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of ages:" GridPane.rowIndex="7" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Filename:" GridPane.rowIndex="8" />
-                  <Label fx:id="labelDesc" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+                  <Label fx:id="labelGenerate" text="XYZ" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
                   <TextField fx:id="textStatEpoch" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                   <TextField fx:id="textFilename" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                  <Button mnemonicParsing="false" text="Generate" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
+                  <Button fx:id="buttonGenerating" mnemonicParsing="false" onAction="#newFileStats" text="Generate" GridPane.halignment="CENTER" GridPane.rowIndex="9" />
                </children>
                <padding>
                   <Insets left="10.0" right="10.0" />

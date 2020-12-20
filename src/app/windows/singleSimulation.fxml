@@ -241,7 +241,7 @@
                      </GridPane.margin>
                   </TextField>
                   <Button fx:id="buttonGenerate" mnemonicParsing="false" onAction="#newFileStats" text="Generate" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
-                  <Label fx:id="labelGenerate" text="BYKUIGHSDFGAHJKBSDFG" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
+                  <Label fx:id="labelGenerate" text="Enter the data and hit generate to generate stats" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
                </children>
             </GridPane>
             <GridPane fx:id="gridCanvas" minHeight="0.0" minWidth="0.0">

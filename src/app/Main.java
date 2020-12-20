@@ -19,7 +19,7 @@ public class Main extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         primaryStage.setTitle("Darwin Simulator");
-        primaryStage.getIcons().add(new Image("file:resources/icon.png"));
+        primaryStage.getIcons().add(new Image(getClass().getResource("windows/resources/icon.png").toURI().toString()));
         primaryStage.setScene(scene);
         primaryStage.show();
     }

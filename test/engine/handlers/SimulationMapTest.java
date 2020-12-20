@@ -27,13 +27,26 @@ public class SimulationMapTest {
     }
 
     @Test
+    public void jungleTest() {
+        for (int x = 0; x < 10; ++x) {
+            for(int y = 0; y < 10; ++y) {
+                if ((x == 4 || x == 5) && (y == 4 || y == 5)) {
+                    assertTrue(testMap.isJungle(new Vector(x, y)));
+                } else {
+                    assertFalse(testMap.isJungle(new Vector(x, y)));
+                }
+            }
+        }
+    }
+
+    @Test
     public void spawnGrassTest() {
-        int rounds = Math.max(testMap.getMaxSteppeBushes(), testMap.getMaxJungleBushes());
+        int rounds = 96;
         for (int i = 0; i < rounds; ++i) {
             testMap.spawnGrass();
         }
-        assertEquals(testMap.getMaxJungleBushes(), testMap.getJungleBushes());
-        assertEquals(testMap.getMaxSteppeBushes(), testMap.getSteppeBushes());
+        assertEquals(4, testMap.getJungleBushes());
+        assertEquals(96, testMap.getSteppeBushes());
     }
 
     @Test

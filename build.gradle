@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['src']
+            exclude "**/*.java"
+        }
+    }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+        resources {
+            srcDirs = ['test']
+            exclude "**/*.java"
+        }
+    }
+}
+
+dependencies {
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testCompile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+mainClassName = 'app.Main'

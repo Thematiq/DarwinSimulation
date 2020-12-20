@@ -82,8 +82,8 @@ public class Simulation {
      * Send signal to the all tiles containing grass to eat
      */
     private void handleEating() {
-        for(int x = 0; x < this.map.getMaxX(); ++x) {
-            for(int y = 0; y < this.map.getMaxY(); ++y) {
+        for(int x = 0; x <= this.map.getMaxX(); ++x) {
+            for(int y = 0; y <= this.map.getMaxY(); ++y) {
                 if (this.map.isGrass(new Vector(x, y))) {
                     this.map.eatGrass(new Vector(x, y));
                 }
@@ -95,8 +95,8 @@ public class Simulation {
      * Send signal to all tiles to breed
      */
     private void handleLove() {
-        for(int x = 0; x < this.map.getMaxX(); ++x) {
-            for(int y = 0; y < this.map.getMaxY(); ++y) {
+        for(int x = 0; x <= this.map.getMaxX(); ++x) {
+            for(int y = 0; y <= this.map.getMaxY(); ++y) {
                 this.map.makeLove(new Vector(x, y));
             }
         }

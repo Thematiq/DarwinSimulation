@@ -1,10 +1,7 @@
 package app.windows;
 
 import engine.handlers.Simulation;
-import engine.tools.AnimalStatistician;
-import engine.tools.Genome;
-import engine.tools.Parameters;
-import engine.tools.SimulationStatistician;
+import engine.tools.*;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -15,6 +12,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+
+import java.net.URISyntaxException;
 
 public class DoubleController extends AbstractSimulatorController {
     private Simulation simOne;
@@ -28,6 +27,9 @@ public class DoubleController extends AbstractSimulatorController {
     int cellSizeOne;
     int cellSizeTwo;
     boolean canGenerate = false;
+    boolean generating = false;
+    int from;
+    int to;
 
     @FXML
     private Label labelDayOneBottom;
@@ -70,6 +72,8 @@ public class DoubleController extends AbstractSimulatorController {
     @FXML
     private Label labelDesc;
     @FXML
+    private Label labelGenerate;
+    @FXML
     private TextField textEpoch;
     @FXML
     private TextField textStatEpoch;
@@ -96,6 +100,8 @@ public class DoubleController extends AbstractSimulatorController {
     @FXML
     private Button buttonNextTwo;
     @FXML
+    private Button buttonGenerating;
+    @FXML
     private Canvas canvasOne;
     @FXML
     private Canvas canvasTwo;
@@ -104,29 +110,44 @@ public class DoubleController extends AbstractSimulatorController {
     @FXML
     private GridPane gridCanvasTwo;
 
-    void draw(Simulation sim, Canvas can, Genome dom, int cellSize) {
-        super.cellSize = cellSize;
-        super.draw(sim, can, dom);
+    public DoubleController() throws URISyntaxException { }
+
+    boolean getStatusOne() { return this.buttonStartOne.isDisabled(); }
+
+    boolean getStatusTwo() { return this.buttonStartTwo.isDisabled(); }
+
+    void draw(Simulation sim, Canvas can) {
+        Genome dominant;
+        if (sim == this.simOne) {
+            dominant = this.domOne;
+            super.cellSize = this.cellSizeOne;
+            super.drawDominant = this.radioDominantOne.isSelected();
+        } else {
+            dominant = this.domTwo;
+            super.cellSize = this.cellSizeTwo;
+            super.drawDominant = this.radioDominantTwo.isSelected();
+        }
+        super.draw(sim, can, dominant);
     }
 
     private void listenCanvasOneResize(ObservableValue<? extends Number> observableValue, Number number, Number number1) {
         this.canvasOne.setHeight(this.gridCanvasOne.getHeight());
         this.canvasOne.setWidth(this.gridCanvasOne.getWidth());
         this.initDrawer();
-        this.draw(this.simOne, this.canvasOne, this.domOne, this.cellSizeOne);
+        this.draw(this.simOne, this.canvasOne);
     }
     private void listenCanvasTwoResize(ObservableValue<? extends Number> observableValue, Number number, Number number1) {
         this.canvasTwo.setHeight(this.gridCanvasTwo.getHeight());
         this.canvasTwo.setWidth(this.gridCanvasTwo.getWidth());
         this.initDrawer();
-        this.draw(this.simTwo, this.canvasTwo, this.domTwo, this.cellSizeTwo);
+        this.draw(this.simTwo, this.canvasTwo);
     }
 
     private void listenText(Observable observable) {
         this.canGenerate = !this.textStatEpoch.getText().equals("") && !this.textFilename.getText().equals("");
     }
 
-    private void setSimOneStatus(boolean status) {
+    private void setStatusOne(boolean status) {
         this.buttonNextOne.setDisable(status);
         this.buttonStartOne.setDisable(status);
         this.buttonStopOne.setDisable(!status);
@@ -137,10 +158,11 @@ public class DoubleController extends AbstractSimulatorController {
         }
     }
 
-    private void setSimTwoStatus(boolean status) {
+    private void setStatusTwo(boolean status) {
         this.buttonNextTwo.setDisable(status);
         this.buttonStartTwo.setDisable(status);
         this.buttonStopTwo.setDisable(!status);
+        this.buttonGenerating.setDisable(status || !this.canGenerate || this.generating);
         if (status) {
             this.timeTwo.play();
         } else {
@@ -149,26 +171,56 @@ public class DoubleController extends AbstractSimulatorController {
     }
 
     @FXML
-    private void startOne() { this.setSimOneStatus(true); }
+    private void startOne() { this.setStatusOne(true); }
 
     @FXML
-    private void stopOne() { this.setSimOneStatus(false); }
+    private void stopOne() { this.setStatusOne(false); }
 
     @FXML
     private void nextOne() { this.simOne.nextDay(); }
 
     @FXML
-    private void startTwo() { this.setSimTwoStatus(true); }
+    private void startTwo() { this.setStatusTwo(true); }
 
     @FXML
-    private void stopTwo() { this.setSimTwoStatus(false); }
+    private void stopTwo() { this.setStatusTwo(false); }
 
     @FXML
     private void nextTwo() { this.simTwo.nextDay(); }
 
+    @FXML
+    private void newFileStats() {
+        this.generating = true;
+        this.buttonGenerating.setDisable(true);
+        this.labelGenerate.setText(super.gathering);
+        this.radioLeftSim.setDisable(true);
+        this.radioRightSim.setDisable(true);
+        this.labelGenerate.setText(super.gathering);
+        if (this.radioLeftSim.isSelected()) {
+            this.from = this.simOne.getDay();
+            } else {
+            this.from = this.simTwo.getDay();
+        }
+        this.to = Integer.parseInt(this.textStatEpoch.getText()) + this.from;
+    }
+
+    @FXML
+    private void ToggleDisplayDominantOne() {
+        this.draw(this.simOne, this.canvasOne);
+    }
+
+    @FXML
+    private void ToggleDisplayDominantTwo() {
+        this.draw(this.simTwo, this.canvasTwo);
+    }
+
     @Override
     public void newData(AnimalStatistician caller) {
-
+        this.labelChildren.setText(String.valueOf(caller.getTotalChildren()));
+        this.labelDescendants.setText(String.valueOf(caller.getTotalDescendants()));
+        if (caller.hasDied()) {
+            this.labelDayOfDeath.setText(String.valueOf(caller.getDeathDay()));
+        }
     }
 
     void initDrawer() {
@@ -192,9 +244,20 @@ public class DoubleController extends AbstractSimulatorController {
             this.labelVegOne.setText(String.valueOf(caller.getCurrentVegetation()));
             this.labelEnergyOne.setText(String.valueOf(caller.getCurrentEnergy()));
             this.labelLifespanOne.setText(String.valueOf(caller.getCurrentLifespan()));
+            this.labelChildrenOne.setText(String.valueOf(caller.getCurrentChildren()));
+            this.labelGeneOne.setText(String.valueOf(caller.getCurrentDominant()));
 
             this.domOne = caller.getCurrentDominant();
-            this.draw(this.simOne, this.canvasOne, this.domOne, this.cellSizeOne);
+            this.draw(this.simOne, this.canvasOne);
+            if (this.generating && this.radioLeftSim.isSelected() && this.to == caller.getCurrentDay()) {
+                Stats export = caller.getStats(this.from, this.to);
+                this.generating = false;
+                JSONIO.writeStats(export, this.textFilename.getText());
+                this.setStatusOne(this.getStatusOne());
+                this.labelGenerate.setText(super.saved);
+                this.radioLeftSim.setDisable(false);
+                this.radioRightSim.setDisable(false);
+            }
         } else if (caller.equals(this.statTwo)) {
             this.labelPopTwoBottom.setText(String.valueOf(caller.getCurrentAnimals()));
             this.labelDayTwoBottom.setText(String.valueOf(caller.getCurrentDay()));
@@ -203,9 +266,20 @@ public class DoubleController extends AbstractSimulatorController {
             this.labelVegTwo.setText(String.valueOf(caller.getCurrentVegetation()));
             this.labelEnergyTwo.setText(String.valueOf(caller.getCurrentEnergy()));
             this.labelLifespanTwo.setText(String.valueOf(caller.getCurrentLifespan()));
+            this.labelChildrenTwo.setText(String.valueOf(caller.getCurrentChildren()));
+            this.labelGeneTwo.setText(String.valueOf(caller.getCurrentDominant()));
 
             this.domTwo = caller.getCurrentDominant();
-            this.draw(this.simTwo, this.canvasTwo, this.domTwo, this.cellSizeTwo);
+            this.draw(this.simTwo, this.canvasTwo);
+            if (this.generating && this.radioRightSim.isSelected() &&this.to == caller.getCurrentDay()) {
+                Stats export = caller.getStats(this.from, this.to);
+                this.generating = false;
+                JSONIO.writeStats(export, this.textFilename.getText());
+                this.setStatusTwo(this.getStatusTwo());
+                this.labelGenerate.setText(super.saved);
+                this.radioLeftSim.setDisable(false);
+                this.radioRightSim.setDisable(false);
+            }
         }
     }
 
@@ -223,6 +297,11 @@ public class DoubleController extends AbstractSimulatorController {
         this.textFilename.textProperty().addListener(this::listenText);
         this.textStatEpoch.textProperty().addListener(this::listenText);
 
+        ToggleGroup g = new ToggleGroup();
+        this.radioLeftSim.setToggleGroup(g);
+        this.radioRightSim.setToggleGroup(g);
+        this.radioLeftSim.setSelected(true);
+
         this.simOne = new Simulation(super.params);
         this.simTwo = new Simulation(super.params);
         this.statOne = new SimulationStatistician(this.simOne);
@@ -236,9 +315,12 @@ public class DoubleController extends AbstractSimulatorController {
         this.timeOne.setCycleCount(Animation.INDEFINITE);
         this.timeTwo = new Timeline(new KeyFrame(Duration.millis(super.dayLength), e -> this.simTwo.nextDay()));
         this.timeTwo.setCycleCount(Animation.INDEFINITE);
-        this.setSimOneStatus(false);
-        this.setSimTwoStatus(false);
+        this.setStatusOne(false);
+        this.setStatusTwo(false);
 
+        // Rescale canvas, we can pass nulls as params, because that functions doesn't use them
+        this.listenCanvasOneResize(null, null, null);
+        this.listenCanvasTwoResize(null, null, null);
         this.simOne.zeroDay();
         this.simTwo.zeroDay();
     }

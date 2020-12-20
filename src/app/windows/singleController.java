@@ -21,6 +21,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import java.net.URISyntaxException;
+
 /**
  * Controller for single simulation window
  * @author Mateusz Praski
@@ -35,6 +37,9 @@ public class singleController extends AbstractSimulatorController implements IOb
     XYChart.Series<Number, Number> vegetation;
     ObservableList<PieChart.Data> pieChardData;
     boolean canGenerate = false;
+    boolean generating = false;
+    int from;
+    int to;
 
     @FXML
     private Label labelPop;
@@ -89,6 +94,8 @@ public class singleController extends AbstractSimulatorController implements IOb
     @FXML
     private GridPane gridCanvas;
 
+    public singleController() throws URISyntaxException { }
+
     private void listenCanvasResize(ObservableValue<? extends Number> observableValue, Number number, Number number1) {
         this.canvasSim.setHeight(this.gridCanvas.getHeight());
         this.canvasSim.setWidth(this.gridCanvas.getWidth());
@@ -98,13 +105,14 @@ public class singleController extends AbstractSimulatorController implements IOb
 
     private void listenText(Observable observable) {
         this.canGenerate = !this.textStatEpoch.getText().equals("") && !this.textFilename.getText().equals("");
+        this.buttonGenerate.setDisable(!this.canGenerate);
     }
 
     private void setStatus(boolean status) {
         this.buttonStart.setDisable(status);
         this.buttonStop.setDisable(!status);
         this.buttonNextDay.setDisable(status);
-        this.buttonGenerate.setDisable(status && !this.canGenerate);
+        this.buttonGenerate.setDisable(status || !this.canGenerate || this.generating);
         if(status) {
             this.timeline.play();
             if (this.watcherRunning()) {
@@ -122,9 +130,17 @@ public class singleController extends AbstractSimulatorController implements IOb
         }
     }
 
+    boolean getStatus() {
+        return this.buttonStart.isDisabled();
+    }
+
     @FXML
     private void newFileStats() {
-
+        this.generating = true;
+        this.buttonGenerate.setDisable(true);
+        this.from = this.sim.getDay();
+        this.to = Integer.parseInt(this.textStatEpoch.getText()) + this.from;
+        this.labelGenerate.setText(super.gathering);
     }
 
     @FXML
@@ -247,6 +263,13 @@ public class singleController extends AbstractSimulatorController implements IOb
 
         this.dominant = this.stat.getCurrentDominant();
         super.draw(this.sim, this.canvasSim, this.dominant);
+        if (this.generating && this.to == caller.getCurrentDay()) {
+            Stats export = caller.getStats(this.from, this.to);
+            this.generating = false;
+            JSONIO.writeStats(export, this.textFilename.getText());
+            this.setStatus(this.getStatus());
+            this.labelGenerate.setText(super.saved);
+        }
     }
 
     @Override
@@ -271,6 +294,7 @@ public class singleController extends AbstractSimulatorController implements IOb
         this.timeline.setCycleCount(Animation.INDEFINITE);
         this.setStatus(false);
 
+        this.listenCanvasResize(null, null, null);
         this.sim.zeroDay();
     }
 }

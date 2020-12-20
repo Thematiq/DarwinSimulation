@@ -201,6 +201,8 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
         out.meanChildren /= duration;
         out.lifespan /= duration;
         out.dominating = this.evaluateMostPopularFromList(genePool);
+        out.from = from;
+        out.to = to;
 
         return out;
     }

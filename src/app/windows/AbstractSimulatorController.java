@@ -12,6 +12,7 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 
 /**
@@ -21,9 +22,9 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractSimulatorController implements IObserverSimulationStatistics, IObserverAnimalStatistics {
     final Pattern numericPattern = Pattern.compile("^([1-9][0-9]*)?$");
-    final Pattern filenamePattern = Pattern.compile("^[^<>:;,?\"*|/]+$");
-    final Image animal = new Image("file:resources/animal.png");
-    final Image flower = new Image("file:resources/flower.png");
+    final Pattern filenamePattern = Pattern.compile("^([^<>:;,?\"*|/]+)?$");
+    final Image animal = new Image(getClass().getResource("resources/animal.png").toURI().toString());
+    final Image flower = new Image(getClass().getResource("resources/flower.png").toURI().toString());
     final String stillLiving = "Haven't died yet";
     final String watcherEnded = "Didn't die during watching";
     final String watchingRunning = "Watching / Please stop simulation to choose new animal";
@@ -33,11 +34,14 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
     final String gathering = "Waiting for the end of the period";
     final String saved = "Saved";
     final boolean grid = false;
-    final int dayLength = 10;
+    final int dayLength = 200;
 
     Parameters params;
     boolean drawDominant = false;
     int cellSize;
+
+    protected AbstractSimulatorController() throws URISyntaxException {
+    }
 
     Change numericChange(Change change) {
         if (numericPattern.matcher(change.getControlNewText()).matches()) {
@@ -85,8 +89,8 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
         this.drawMap(gc, sim);
 
         Animal an;
-        for(int x = 0; x < params.width ; ++x) {
-            for(int y = 0; y < params.height; ++y) {
+        for (int x = 0; x < params.width ; ++x) {
+            for (int y = 0; y < params.height; ++y) {
                 if (sim.isGrass(new Vector(x, y))) {
                     gc.drawImage(this.flower, this.cellSize * x, this.cellSize * y, this.cellSize, this.cellSize);
                 }
@@ -111,13 +115,18 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
         gc.fillRect(0, 0, this.cellSize * params.width, this.cellSize * params.height);
         gc.setFill(Color.DARKGREEN);
         int[] jungleSize = sim.jungleSize();
-        for(int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; ++i) {
             jungleSize[i] *= this.cellSize;
         }
         gc.fillRect(jungleSize[0], jungleSize[1], jungleSize[2], jungleSize[3]);
         gc.setFill(Color.GREEN);
     }
 
+    /**
+     * Draws grid
+     * @param gc Graphics context
+     * @param can canvas
+     */
     void drawGrid(GraphicsContext gc, Canvas can) {
         gc.setLineWidth(1.0);
         gc.setStroke(Color.BLACK);
