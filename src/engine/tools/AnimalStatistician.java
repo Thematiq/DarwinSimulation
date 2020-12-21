@@ -29,6 +29,7 @@ public class AnimalStatistician implements IObserverBreed, IObserverKilled, IObs
         this.watchedAnimal.addBreedObserver(this);
         this.watchedAnimal.addKilledObserver(this);
         sim.addNewDayObserver(this);
+        this.callObservers();
     }
 
     @Override

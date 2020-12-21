@@ -149,30 +149,29 @@ public class DoubleController extends AbstractSimulatorController {
 
     private void listenText(Observable observable) {
         this.canGenerate = !this.textStatEpoch.getText().equals("") && !this.textFilename.getText().equals("");
+        this.setStatusOne(this.getStatusOne());
+        this.setStatusTwo(this.getStatusTwo());
     }
 
     private void setStatusOne(boolean status) {
         this.buttonNextOne.setDisable(status);
         this.buttonStartOne.setDisable(status);
         this.buttonStopOne.setDisable(!status);
-        String sim;
-        if (this.leftSim) {
-            sim = "Left sim: ";
-        } else {
-            sim = "Right sim: ";
+        if (this.radioLeftSim.isSelected()) {
+            this.buttonGenerating.setDisable(status || !this.canGenerate || this.generating);
         }
         if (status) {
             this.timeOne.play();
-            if (this.watcherRunning()) {
-                this.labelDesc.setText(sim + super.watchingRunning);
-            } else {
+            if (this.watcherRunning() && this.leftSim) {
+                this.labelDesc.setText("Left sim" + super.watchingRunning);
+            } else if (!this.watcherRunning()){
                 this.labelDesc.setText(super.running);
             }
         } else {
             this.timeOne.stop();
-            if (this.watcherRunning()) {
-                this.labelDesc.setText(sim + super.watchingPaused);
-            } else {
+            if (this.watcherRunning() && this.leftSim) {
+                this.labelDesc.setText("Left sim" + super.watchingPaused);
+            } else if (!this.watcherRunning()){
                 this.labelDesc.setText(super.paused);
             }
         }
@@ -196,11 +195,23 @@ public class DoubleController extends AbstractSimulatorController {
         this.buttonNextTwo.setDisable(status);
         this.buttonStartTwo.setDisable(status);
         this.buttonStopTwo.setDisable(!status);
-        this.buttonGenerating.setDisable(status || !this.canGenerate || this.generating);
+        if (this.radioRightSim.isSelected()) {
+            this.buttonGenerating.setDisable(status || !this.canGenerate || this.generating);
+        }
         if (status) {
             this.timeTwo.play();
+            if (this.watcherRunning() && !this.leftSim) {
+                this.labelDesc.setText("Right sim" + super.watchingRunning);
+            } else if (!this.watcherRunning()) {
+                this.labelDesc.setText(super.running);
+            }
         } else {
             this.timeTwo.stop();
+            if (this.watcherRunning() && !this.leftSim) {
+                this.labelDesc.setText("Right sim" + super.watchingPaused);
+            } else if(!this.watcherRunning()) {
+                this.labelDesc.setText(super.paused);
+            }
         }
     }
 
@@ -218,6 +229,7 @@ public class DoubleController extends AbstractSimulatorController {
         int endDate = this.getEndDate();
         if (!this.getStatusOne() && this.simOne.animalAt(pos) != null && endDate != -1) {
             System.out.println(endDate);
+            this.leftSim = true;
             this.localStat = new AnimalStatistician(this.simOne, this.simOne.animalAt(pos), endDate);
             this.localStat.addIObserverAnimalStatistics(this);
             this.newData(this.localStat);
@@ -230,6 +242,7 @@ public class DoubleController extends AbstractSimulatorController {
         int endDate = this.getEndDate();
         if (!this.getStatusTwo() && this.simTwo.animalAt(pos) != null && endDate != -1) {
             System.out.println(endDate);
+            this.leftSim = false;
             this.localStat = new AnimalStatistician(this.simTwo, this.simTwo.animalAt(pos), endDate);
             this.localStat.addIObserverAnimalStatistics(this);
             this.newData(this.localStat);
@@ -279,6 +292,17 @@ public class DoubleController extends AbstractSimulatorController {
     private void ToggleDisplayDominantTwo() {
         this.draw(this.simTwo, this.canvasTwo);
     }
+
+    @FXML
+    private void ToggleSimLeft() {
+        this.setStatusOne(this.getStatusOne());
+    }
+
+    @FXML
+    private void ToggleSimRight() {
+        this.setStatusTwo(this.getStatusTwo());
+    }
+
 
     @Override
     public void newData(AnimalStatistician caller) {
