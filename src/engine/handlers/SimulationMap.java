@@ -45,8 +45,10 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
             }
         }
 
-        int jungleWidth = (int)(params.width * params.jungleRatio);
-        int jungleHeight = (int)(params.height * params.jungleRatio);
+        double jungleRatio = Math.sqrt(params.jungleRatio);
+
+        int jungleWidth = (int)(params.width * jungleRatio);
+        int jungleHeight = (int)(params.height * jungleRatio);
 
         Vector middle = new Vector(params.width / 2, params.height / 2);
         this.jungleBottomLeft = middle.add(new Vector(- (jungleWidth/2), - (jungleHeight/2)));

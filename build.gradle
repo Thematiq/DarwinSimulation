@@ -54,7 +54,7 @@ test {
 
 jar {
     manifest {
-        attributes "Main-Class" : "app.Main"
+        attributes "Main-Class" : "app.Build"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

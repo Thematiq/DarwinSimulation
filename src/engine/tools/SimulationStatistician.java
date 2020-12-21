@@ -20,10 +20,10 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
     private final List<Integer> livingAnimals = new ArrayList<>();
     private final List<Integer> deadAnimals = new ArrayList<>();
     private final List<Integer> vegetation = new ArrayList<>();
-    private final List<Integer> meanEnergy = new ArrayList<>();
-    private final List<Integer> meanChildren = new ArrayList<>();
+    private final List<Float> meanEnergy = new ArrayList<>();
+    private final List<Float> meanChildren = new ArrayList<>();
     private final List<Genome> dominatingGenome = new ArrayList<>();
-    private final List<Integer> deadLifespans = new ArrayList<>();
+    private final List<Float> deadLifespans = new ArrayList<>();
     private final List<IObserverSimulationStatistics> observerStatistics = new ArrayList<>();
     private final List<Integer[]> genesPopularity = new ArrayList<>();
     private final Map<Integer, List<Genome>> geneGraveyard = new HashMap<>();
@@ -63,17 +63,17 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
         }
 
         if (caller.getGraveyard() != 0) {
-            this.deadLifespans.add((int) (this.deadTotalLifespan / caller.getGraveyard()));
+            this.deadLifespans.add((float) (this.deadTotalLifespan / caller.getGraveyard()));
         } else {
-            this.deadLifespans.add(0);
+            this.deadLifespans.add(0f);
         }
 
         if (currentAnimals.size() != 0) {
-            this.meanEnergy.add((int) (totalEnergy / currentAnimals.size()));
-            this.meanChildren.add((int) (totalChildren / currentAnimals.size()));
+            this.meanEnergy.add(((float) totalEnergy) / currentAnimals.size());
+            this.meanChildren.add(((float) totalChildren) / currentAnimals.size());
         } else {
-            this.meanEnergy.add(0);
-            this.meanChildren.add(0);
+            this.meanEnergy.add(0f);
+            this.meanChildren.add(0f);
         }
 
         this.dominatingGenome.add(this.evaluateMostPopularGenome(currentAnimals));
@@ -172,15 +172,15 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
         return this.deadAnimals.get(this.deadAnimals.size() - 1);
     }
 
-    public int getCurrentEnergy() {
+    public float getCurrentEnergy() {
         return this.meanEnergy.get(this.meanEnergy.size() - 1);
     }
 
-    public int getCurrentChildren() {
+    public float getCurrentChildren() {
         return this.meanChildren.get(this.meanChildren.size() - 1);
     }
 
-    public int getCurrentLifespan() {
+    public float getCurrentLifespan() {
         return this.deadLifespans.get(this.deadLifespans.size() - 1);
     }
 
