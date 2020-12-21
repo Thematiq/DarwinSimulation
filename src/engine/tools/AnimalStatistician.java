@@ -10,6 +10,10 @@ import engine.observers.IObserverNewDay;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Objects gathering information about the animal within given period
+ * @author Mateusz Praski
+ */
 public class AnimalStatistician implements IObserverBreed, IObserverKilled, IObserverNewDay {
     private final Animal watchedAnimal;
     private final List<IObserverAnimalStatistics> observerAnimalStatisticsList = new ArrayList<>();
@@ -22,6 +26,12 @@ public class AnimalStatistician implements IObserverBreed, IObserverKilled, IObs
     private int deathDay = 0;
     private boolean died = false;
 
+    /**
+     * Creates new statistician
+     * @param sim Animal simulation
+     * @param a Desired animal
+     * @param duration duration of watching period
+     */
     public AnimalStatistician(Simulation sim, Animal a, int duration) {
         this.startDate = sim.getDay();
         this.endDate = sim.getDay() + duration;

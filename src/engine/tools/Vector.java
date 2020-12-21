@@ -88,6 +88,12 @@ public class Vector {
         return new Vector(new_x, new_y);
     }
 
+    /**
+     * Returns list of neighbouring vectors, within given vector
+     * @param bottomLeft Bottom left vector, all returned must follow him
+     * @param topRight Top right vector, all returned must precede him
+     * @return List of neighbouring vectors
+     */
     public List<Vector> getNeighbours(Vector bottomLeft, Vector topRight) {
         List<Vector> out = new ArrayList<>();
         Vector potential;
@@ -102,6 +108,10 @@ public class Vector {
         return out;
     }
 
+    /**
+     *
+     * @return list of all neighbouring vectors
+     */
     public List<Vector> getNeighbours() {
         List<Vector> out = new ArrayList<>();
         Vector potential;

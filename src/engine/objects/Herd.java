@@ -98,7 +98,6 @@ public class Herd implements IObserverKilled, IObserverEnergyChanged {
     }
 
     /**
-     *
      * @return Strongest Animal on a tile
      */
     public Animal getAnimal() {
@@ -110,7 +109,6 @@ public class Herd implements IObserverKilled, IObserverEnergyChanged {
     }
 
     /**
-     *
      * @return List of strongest Animals on the tile
      */
     List<Animal> getStrongest() {
@@ -118,7 +116,6 @@ public class Herd implements IObserverKilled, IObserverEnergyChanged {
     }
 
     /**
-     *
      * @return 2 elements Array of Animals containing potential parents
      */
     Animal[] getStrongestCouple() {

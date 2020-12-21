@@ -16,7 +16,7 @@ import java.util.List;
 public class Simulation {
     private final List<IObserverNewDay> newDayObservers = new ArrayList<>();
     private final List<IObserverKilled> observerKilled = new ArrayList<>();
-    private final SimulationMap map;
+    final SimulationMap map;
 
     private int day = 0;
 
@@ -28,7 +28,7 @@ public class Simulation {
 
     /**
      * Calls all observer during 0-th day
-     * Separated from constructor to allow adding observers
+     * Separated from constructor allowing adding observers
      */
     public void zeroDay() { this.callObservers(); }
 

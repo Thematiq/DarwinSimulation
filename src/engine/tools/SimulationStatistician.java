@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Object used to gather data about simulation
+ * @author Mateusz Praski
+ */
 public class SimulationStatistician implements IObserverNewDay, IObserverKilled {
 
     private final List<Integer> livingAnimals = new ArrayList<>();
@@ -78,6 +82,11 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
         this.callObservers();
     }
 
+    /**
+     * Evaluate total popularity of orientations
+     * @param animals List of animals
+     * @return Array of orientations
+     */
     private Integer[] evaluateGenePopularity(List<Animal> animals) {
         int[] popularity = new int[8];
         int[] singlePop;
@@ -94,6 +103,10 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
         return ret;
     }
 
+    /**
+     * @param animals List of animals
+     * @return Most popular genotype
+     */
     private Genome evaluateMostPopularGenome(List<Animal> animals) {
         Map<Genome, Integer> pop = new HashMap<>();
         for(Animal a : animals) {
@@ -106,6 +119,11 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
         return getGenome(pop);
     }
 
+    /**
+     *
+     * @param genes List of genes
+     * @return Most popular genotype
+     */
     private Genome evaluateMostPopularFromList(List<Genome> genes) {
         Map<Genome, Integer> pop = new HashMap<>();
         for(Genome g : genes) {
@@ -118,6 +136,11 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
         return getGenome(pop);
     }
 
+    /**
+     *
+     * @param pop Map of genomes popularity
+     * @return Most popular genome from the map or null if map is empty
+     */
     private Genome getGenome(Map<Genome, Integer> pop) {
         Genome candidate = null;
         int votes = -1;
@@ -171,6 +194,12 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
 
     public int getCurrentDay() { return this.currentDay; }
 
+    /**
+     *
+     * @param from Beginning of the period
+     * @param to Rnd of the period
+     * @return Stats object containing average data for a given period
+     */
     public Stats getStats(int from, int to) {
         if (from > to || from > this.getCurrentDay() || to > this.getCurrentDay()) {
             throw new IllegalArgumentException();
@@ -180,7 +209,6 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
 
         for (int i = from; i <= to; ++i) {
             out.living += this.livingAnimals.get(i);
-            out.dead += this.deadAnimals.get(i);
             out.vegetation += this.vegetation.get(i);
             out.meanEnergy += this.meanEnergy.get(i);
             out.meanChildren += this.meanChildren.get(i);
@@ -195,7 +223,7 @@ public class SimulationStatistician implements IObserverNewDay, IObserverKilled 
 
         int duration = to - from + 1;
         out.living /= duration;
-        out.dead /= duration;
+        out.dead = (this.deadAnimals.get(to) - this.deadAnimals.get(from)) / duration;
         out.vegetation /= duration;
         out.meanEnergy /= duration;
         out.meanChildren /= duration;

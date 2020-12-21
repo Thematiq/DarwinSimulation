@@ -40,8 +40,7 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
     boolean drawDominant = false;
     int cellSize;
 
-    protected AbstractSimulatorController() throws URISyntaxException {
-    }
+    protected AbstractSimulatorController() throws URISyntaxException { }
 
     Change numericChange(Change change) {
         if (numericPattern.matcher(change.getControlNewText()).matches()) {

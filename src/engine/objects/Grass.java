@@ -18,7 +18,6 @@ public class Grass {
     }
 
     /**
-     *
      * @return Grass position
      */
     public Vector getPos() {

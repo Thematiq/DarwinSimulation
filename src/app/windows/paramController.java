@@ -22,7 +22,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-
+/**
+ * JavaFX window to input data or load from json file
+ * @author Mateusz Praski
+ */
 public class paramController implements Initializable {
     private boolean single;
 
@@ -149,6 +152,11 @@ public class paramController implements Initializable {
                 Integer.parseInt(this.startingText.getText()) <= Integer.parseInt(this.widthText.getText()) * Integer.parseInt(this.heightText.getText());
     }
 
+    /**
+     * Changes window
+     * @param window path to new window
+     * @param params Simulation params
+     */
     private void spawnSimulationWindow(String window, Parameters params) throws IOException {
         Stage currentStage = (Stage) this.startingText.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource(window));

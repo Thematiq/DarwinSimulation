@@ -1,5 +1,9 @@
 package engine.tools;
 
+/**
+ * Data holder
+ * @author Mateusz Praski
+ */
 public class Stats {
     int from;
     int to;

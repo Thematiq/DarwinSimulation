@@ -6,7 +6,18 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 
+/**
+ * Class containing static IO methods
+ * @author Mateusz Praski
+ */
 public class JSONIO {
+
+    /**
+     * Writes stats object into json-like file
+     * @param a Stats object
+     * @param filename File path
+     * @return true if saved successfully
+     */
     public static boolean writeStats(Stats a, String filename) {
         JSONObject jo = new JSONObject();
         jo.put("from", a.from);
@@ -27,6 +38,11 @@ public class JSONIO {
         return true;
     }
 
+    /**
+     * Read params from file
+     * @param filename filename
+     * @return Parameters from JSON file
+     */
     public static Parameters readParameters(String filename) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         FileReader reader = new FileReader(filename);

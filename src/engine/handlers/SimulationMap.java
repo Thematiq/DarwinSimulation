@@ -16,11 +16,11 @@ import java.util.*;
  * @author Mateusz Praski
  */
 public class SimulationMap implements IObserverPositionChanged, IObserverKilled {
-    private final Parameters params;
+    final Parameters params;
     final Vector jungleBottomLeft;
     final Vector jungleTopRight;
-    private final Vector bottomLeft = new Vector(0, 0);
-    private final Vector topRight;
+    final Vector bottomLeft = new Vector(0, 0);
+    final Vector topRight;
     private final Random rand = new Random();
     private final Map<Vector, Grass> bushes = new HashMap<>();
     private final List<Animal> animalList = new ArrayList<>();
@@ -124,6 +124,10 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         }
     }
 
+    /**
+     * Generates list of available tiles, then choose one from each land type
+     * @return 2 element array with new grass in the jungle and in the steppes
+     */
     Grass[] getGrass() {
         Grass[] g = new Grass[2];
         List<Vector> potentialJungle = new ArrayList<>();
@@ -152,7 +156,11 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         return g;
     }
 
-    Animal getAnimal() {
+    /**
+     * Spawns random animal on free tile
+     * @return new Animal
+     */
+    private Animal getAnimal() {
         Vector pos;
         do {
             pos = Generators.randomVector(this.rand, this.bottomLeft, this.topRight);
@@ -205,13 +213,13 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         return this.bottomLeft.precedes(pos) && this.topRight.follows(pos);
     }
 
-    public boolean hasAnimal(Vector pos) { return this.animalAt(pos) == null; }
+    public boolean hasAnimal(Vector pos) { return this.animalAt(pos) != null; }
 
     public boolean isGrass(Vector pos) {
         return this.bushes.get(pos) != null;
     }
 
-    public boolean isEmpty(Vector pos) { return !this.isGrass(pos) || !this.hasAnimal(pos); }
+    public boolean isEmpty(Vector pos) { return !this.isGrass(pos) && !this.hasAnimal(pos); }
 
     /**
      *

@@ -2,6 +2,10 @@ package engine.tools;
 
 import java.util.*;
 
+/**
+ * Genome implementation
+ * @author Mateusz Praski
+ */
 public class Genome {
     public static final int GENOME_SIZE = 32;
     private final Random r = new Random();
@@ -9,32 +13,9 @@ public class Genome {
 
     private int[] codePopularity;
 
-    public Genome(int[] popularity) {
-        if (popularity.length != 8) {
-            throw new IllegalArgumentException("Popularity length should be 8!");
-        }
-        int sum = 0;
-        for (int pop : popularity) {
-            sum += pop;
-            if (pop == 0) {
-                throw new IllegalArgumentException("None popularity can be 0!");
-            }
-        }
-        if (sum != GENOME_SIZE) {
-            throw new IllegalArgumentException("Sum of popularities should be 32!");
-        }
-        this.codePopularity = popularity;
-        this.code = new int[GENOME_SIZE];
-        int j = 0;
-        for(int i = 0; i < 8; ++i) {
-            for(int u = 0; u < this.codePopularity[i]; ++u, ++j) {
-                this.code[j] = i;
-            }
-        }
-        Arrays.sort(this.code);
-        this.calculatePopularity();
-    }
-
+    /**
+     * Generates new random Genome
+     */
     public Genome() {
         this.code = new int[GENOME_SIZE];
         for (int i = 0; i < 8; ++i) {
@@ -48,6 +29,11 @@ public class Genome {
         this.calculatePopularity();
     }
 
+    /**
+     * Generates genome of parents code
+     * @param father First genome
+     * @param mother Second genome (order does not matter)
+     */
     public Genome(Genome father, Genome mother) {
         List<Integer> fatherCode = new ArrayList<>();
         List<Integer> motherCode = new ArrayList<>();
@@ -95,14 +81,20 @@ public class Genome {
         this.calculatePopularity();
     }
 
-    void calculatePopularity() {
+    /**
+     * Updates popularity array
+     */
+    private void calculatePopularity() {
         this.codePopularity = new int[8];
         for(int i = 0; i < GENOME_SIZE; ++i) {
             this.codePopularity[this.code[i]]++;
         }
     }
 
-    void repairGenome() {
+    /**
+     * Repairs Genome if missing orientation
+     */
+    private void repairGenome() {
         if (checkGenome(this.code)) {
             return;
         }
@@ -122,7 +114,12 @@ public class Genome {
         }
     }
 
-    static boolean checkGenome(int[] code) {
+    /**
+     * Checks whether given array misses some orientation
+     * @param code Array of orientations int (does not need to be sorted)
+     * @return True if code is correct
+     */
+    public static boolean checkGenome(int[] code) {
         boolean[] numbers = new boolean[8];
         for (int c : code) { numbers[c] = true; }
         for (boolean b : numbers) { if (!b) return false; }

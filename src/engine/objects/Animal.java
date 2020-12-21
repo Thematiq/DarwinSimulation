@@ -17,8 +17,8 @@ import java.util.List;
  * @author Mateusz Praski
  */
 public class Animal {
-    private final Parameters params;
-    private final Genome genes;
+    final Parameters params;
+    final Genome genes;
     private final List<IObserverPositionChanged> positionObservers = new ArrayList<>();
     private final List<IObserverKilled> killedObservers = new ArrayList<>();
     private final List<IObserverBreed> breedObservers = new ArrayList<>();
@@ -76,7 +76,7 @@ public class Animal {
     }
 
     /**
-     * Calls all observers, that animal have breed
+     * Calls all observers that animal have reproduced
      * @param child Animal's child
      */
     void breed(Animal child) {
