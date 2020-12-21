@@ -30,6 +30,7 @@ public class JSONIO {
         jo.put("dominating genome", a.dominating.toString());
         Writer writer = new FileWriter(filename);
         writer.write(jo.toJSONString());
+        writer.close();
     }
 
     /**
