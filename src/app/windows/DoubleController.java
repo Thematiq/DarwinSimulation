@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class DoubleController extends AbstractSimulatorController {
@@ -428,9 +429,13 @@ public class DoubleController extends AbstractSimulatorController {
             if (this.generating && this.radioLeftSim.isSelected() && this.to == caller.getCurrentDay()) {
                 Stats export = caller.getStats(this.from, this.to);
                 this.generating = false;
-                JSONIO.writeStats(export, this.textFilename.getText());
+                try {
+                    JSONIO.writeStats(export, this.textFilename.getText());
+                    this.labelGenerate.setText(super.saved);
+                } catch (IOException e) {
+                    this.labelGenerate.setText(super.failed);
+                }
                 this.setStatusOne(this.getStatusOne());
-                this.labelGenerate.setText(super.saved);
                 this.radioLeftSim.setDisable(false);
                 this.radioRightSim.setDisable(false);
             }
@@ -450,9 +455,13 @@ public class DoubleController extends AbstractSimulatorController {
             if (this.generating && this.radioRightSim.isSelected() &&this.to == caller.getCurrentDay()) {
                 Stats export = caller.getStats(this.from, this.to);
                 this.generating = false;
-                JSONIO.writeStats(export, this.textFilename.getText());
+                try {
+                    JSONIO.writeStats(export, this.textFilename.getText());
+                    this.labelGenerate.setText(super.saved);
+                } catch (IOException e) {
+                    this.labelGenerate.setText(super.failed);
+                }
                 this.setStatusTwo(this.getStatusTwo());
-                this.labelGenerate.setText(super.saved);
                 this.radioLeftSim.setDisable(false);
                 this.radioRightSim.setDisable(false);
             }

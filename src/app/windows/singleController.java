@@ -21,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
@@ -281,9 +282,13 @@ public class singleController extends AbstractSimulatorController implements IOb
         if (this.generating && this.to == caller.getCurrentDay()) {
             Stats export = caller.getStats(this.from, this.to);
             this.generating = false;
-            JSONIO.writeStats(export, this.textFilename.getText());
+            try {
+                JSONIO.writeStats(export, this.textFilename.getText());
+                this.labelGenerate.setText(super.saved);
+            } catch (IOException e) {
+                this.labelGenerate.setText(super.failed);
+            }
             this.setStatus(this.getStatus());
-            this.labelGenerate.setText(super.saved);
         }
     }
 

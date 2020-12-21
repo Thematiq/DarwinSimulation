@@ -33,6 +33,7 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
     final String running = "Please stop simulation to choose new animal";
     final String gathering = "Waiting for the end of the period";
     final String saved = "Saved";
+    final String failed = "Saving failed";
     final boolean grid = false;
     final int dayLength = 200;
 

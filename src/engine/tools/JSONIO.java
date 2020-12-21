@@ -16,9 +16,8 @@ public class JSONIO {
      * Writes stats object into json-like file
      * @param a Stats object
      * @param filename File path
-     * @return true if saved successfully
      */
-    public static boolean writeStats(Stats a, String filename) {
+    public static void writeStats(Stats a, String filename) throws IOException {
         JSONObject jo = new JSONObject();
         jo.put("from", a.from);
         jo.put("to", a.to);
@@ -29,13 +28,8 @@ public class JSONIO {
         jo.put("mean children", a.meanChildren);
         jo.put("mean lifespan", a.lifespan);
         jo.put("dominating genome", a.dominating.toString());
-        try (Writer writer = new FileWriter(filename)) {
-            writer.write(jo.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        Writer writer = new FileWriter(filename);
+        writer.write(jo.toJSONString());
     }
 
     /**
