@@ -96,6 +96,9 @@ public class singleController extends AbstractSimulatorController implements IOb
 
     public singleController() throws URISyntaxException { }
 
+    /**
+     * Listens to gridCanvas resize, bounding canvas size to grid size
+     */
     private void listenCanvasResize(ObservableValue<? extends Number> observableValue, Number number, Number number1) {
         this.canvasSim.setHeight(this.gridCanvas.getHeight());
         this.canvasSim.setWidth(this.gridCanvas.getWidth());
@@ -103,11 +106,18 @@ public class singleController extends AbstractSimulatorController implements IOb
         super.draw(this.sim, this.canvasSim, this.dominant);
     }
 
+    /**
+     * checks whether both fields are not empty
+     */
     private void listenText(Observable observable) {
         this.canGenerate = !this.textStatEpoch.getText().equals("") && !this.textFilename.getText().equals("");
         this.buttonGenerate.setDisable(!this.canGenerate);
     }
 
+    /**
+     * Set simulation status, blocking proper buttons
+     * @param status True if simulation is running
+     */
     private void setStatus(boolean status) {
         this.buttonStart.setDisable(status);
         this.buttonStop.setDisable(!status);
@@ -130,10 +140,35 @@ public class singleController extends AbstractSimulatorController implements IOb
         }
     }
 
+    /**
+     * @return Current simulation status
+     */
     boolean getStatus() {
         return this.buttonStart.isDisabled();
     }
 
+
+    /**
+     * @return True if animal watcher is running
+     */
+    boolean watcherRunning() {
+        return this.localStat != null && this.localStat.isRunning();
+    }
+
+    /**
+     * @return Duration of animal watching. -1 if text field is empty
+     */
+    private int getDuration() {
+        if (this.textEpoch.getText().equals("")) {
+            return -1;
+        } else {
+            return Integer.parseInt(this.textEpoch.getText());
+        }
+    }
+
+    /**
+     * buttonGenerate event
+     */
     @FXML
     private void newFileStats() {
         this.generating = true;
@@ -143,80 +178,56 @@ public class singleController extends AbstractSimulatorController implements IOb
         this.labelGenerate.setText(super.gathering);
     }
 
+    /**
+     * radioDisplayDominant event
+     */
     @FXML
     private void toggleDisplayDominant() {
         super.drawDominant = this.radioDisplayDominant.isSelected();
         super.draw(this.sim, this.canvasSim, this.dominant);
     }
 
+    /**
+     * Start button event
+     */
     @FXML
     private void startSimulation() {
         this.setStatus(true);
     }
 
+    /**
+     * Stop button event
+     */
     @FXML
     private void stopSimulation() {
         this.setStatus(false);
     }
 
+    /**
+     * Next day button event
+     */
     @FXML
     private void nextDaySimulation() { this.sim.nextDay(); }
 
+    /**
+     * Click on canvas event, allowing for choosing an animal
+     * @param e Mouse event
+     */
     @FXML
     private void canvasClick(MouseEvent e) {
         Vector pos = new Vector((int) (e.getX() / this.cellSize), (int) (e.getY() / this.cellSize));
-        int endDate = this.getEndDate();
-        if (!this.running() && this.sim.animalAt(pos) != null && endDate != -1) {
-            System.out.println(endDate);
+        int endDate = this.getDuration();
+        if (!this.getStatus() && this.sim.animalAt(pos) != null && endDate != -1) {
             this.localStat = new AnimalStatistician(this.sim, this.sim.animalAt(pos), endDate);
             this.localStat.addIObserverAnimalStatistics(this);
             this.newData(this.localStat);
         }
     }
 
-    boolean running() {
-        return this.buttonStart.isDisabled();
-    }
-
-    boolean watcherRunning() {
-        return this.localStat != null && this.localStat.isRunning();
-    }
-
-    private int getEndDate() {
-        if (this.textEpoch.getText().equals("")) {
-            return -1;
-        } else {
-            return Integer.parseInt(this.textEpoch.getText());
-        }
-    }
-
-    private void initCharts() {
-        this.population = new XYChart.Series<>();
-        this.vegetation = new XYChart.Series<>();
-        this.population.setName("Total animals");
-        this.vegetation.setName("Total plants");
-        this.chartOne.getData().addAll(this.vegetation, this.population);
-        this.chartOne.setCreateSymbols(false);
-        this.pieChardData = FXCollections.observableArrayList(
-                new PieChart.Data("0", 0),
-                new PieChart.Data("1", 0),
-                new PieChart.Data("2", 0),
-                new PieChart.Data("3", 0),
-                new PieChart.Data("4", 0),
-                new PieChart.Data("5", 0),
-                new PieChart.Data("6", 0),
-                new PieChart.Data("7", 0)
-        );
-        this.chartGene.setData(this.pieChardData);
-    }
-
-    private void initDrawer() {
-        super.cellSize = (int) (Math.min(this.canvasSim.getWidth(), this.canvasSim.getHeight()) /
-                Math.max(this.params.width, this.params.height));
-        this.canvasSim.setHeight(this.cellSize * this.params.height);
-        this.canvasSim.setWidth(this.cellSize * this.params.width);
-    }
-
+    /**
+     * Animal statistician handler
+     * @param caller calling statistician
+     */
     @Override
     public void newData(AnimalStatistician caller) {
         this.labelChildren.setText(String.valueOf(caller.getTotalChildren()));
@@ -224,14 +235,14 @@ public class singleController extends AbstractSimulatorController implements IOb
         if (caller.hasDied()) {
             this.labelDayOfDeath.setText(String.valueOf(caller.getDeathDay()));
         } else if(caller.isRunning()){
-            if (this.running()) {
+            if (this.getStatus()) {
                 this.labelDesc.setText(super.watchingRunning);
             } else {
                 this.labelDesc.setText(super.watchingPaused);
             }
             this.labelDayOfDeath.setText(super.stillLiving);
         } else {
-            if (this.running()) {
+            if (this.getStatus()) {
                 this.labelDesc.setText(super.running);
             } else {
                 this.labelDesc.setText(super.paused);
@@ -240,6 +251,10 @@ public class singleController extends AbstractSimulatorController implements IOb
         }
     }
 
+    /**
+     * Simulation new day handler
+     * @param caller Calling statistician
+     */
     @Override
     public void update(SimulationStatistician caller) {
         this.population.getData().add(new XYChart.Data<>(this.stat.getCurrentDay(), this.stat.getCurrentAnimals()));
@@ -272,6 +287,43 @@ public class singleController extends AbstractSimulatorController implements IOb
         }
     }
 
+    /**
+     * Initializes charts
+     */
+    private void initCharts() {
+        this.population = new XYChart.Series<>();
+        this.vegetation = new XYChart.Series<>();
+        this.population.setName("Total animals");
+        this.vegetation.setName("Total plants");
+        this.chartOne.getData().addAll(this.vegetation, this.population);
+        this.chartOne.setCreateSymbols(false);
+        this.pieChardData = FXCollections.observableArrayList(
+                new PieChart.Data("0", 0),
+                new PieChart.Data("1", 0),
+                new PieChart.Data("2", 0),
+                new PieChart.Data("3", 0),
+                new PieChart.Data("4", 0),
+                new PieChart.Data("5", 0),
+                new PieChart.Data("6", 0),
+                new PieChart.Data("7", 0)
+        );
+        this.chartGene.setData(this.pieChardData);
+    }
+
+    /**
+     * Initializes canvas size
+     */
+    private void initDrawer() {
+        super.cellSize = (int) (Math.min(this.canvasSim.getWidth(), this.canvasSim.getHeight()) /
+                Math.max(this.params.width, this.params.height));
+        this.canvasSim.setHeight(this.cellSize * this.params.height);
+        this.canvasSim.setWidth(this.cellSize * this.params.width);
+    }
+
+    /**
+     * Initializes simulation window with parameters
+     * @param param Simulation parameters
+     */
     @Override
     public void initSimulation(Parameters param) {
         super.params = param;
