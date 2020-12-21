@@ -77,7 +77,7 @@ User can choose an animal and observe the number of new family members for a giv
 
 ## Saving mean statistic for a period of time
 
-User can also gather mean statistics from a given period. To do so, type in duration to the text field *Duration*, and the filename. After that, you can hit *Generate* button. The simulation will wait till the end of the period, saving average data to the specified file.
+User can also gather mean statistics from a given period. To do so, type in duration to the text field *Number of ages*, and the filename. After that, you can hit *Generate* button. The simulation will wait till the end of the period, saving average data to the specified file.
 
 
 ---

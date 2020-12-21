@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 /**
  * Abstract class for simulation controllers
- * Handlers map drawing
+ * Handles map drawing
  * @author Mateusz Praski
  */
 public abstract class AbstractSimulatorController implements IObserverSimulationStatistics, IObserverAnimalStatistics {

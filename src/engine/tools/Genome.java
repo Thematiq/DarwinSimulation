@@ -92,7 +92,7 @@ public class Genome {
     }
 
     /**
-     * Repairs Genome if missing orientation
+     * Repairs Genome if missing an orientation
      */
     private void repairGenome() {
         if (checkGenome(this.code)) {
