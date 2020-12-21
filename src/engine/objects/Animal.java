@@ -172,14 +172,6 @@ public class Animal {
         return this.pos;
     }
 
-    public int getX() {
-        return this.pos.x;
-    }
-
-    public int getY() {
-        return this.pos.y;
-    }
-
     public int getEnergy() {
         return this.energy;
     }

@@ -3,10 +3,12 @@ package engine.handlers;
 import engine.objects.Animal;
 import engine.observers.IObserverKilled;
 import engine.observers.IObserverNewDay;
+import engine.tools.Genome;
 import engine.tools.Parameters;
 import engine.tools.Vector;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,9 +97,24 @@ public class Simulation {
      * Send signal to all tiles to breed
      */
     private void handleLove() {
+
         for(int x = 0; x <= this.map.getMaxX(); ++x) {
             for(int y = 0; y <= this.map.getMaxY(); ++y) {
-                this.map.makeLove(new Vector(x, y));
+                Vector pos = new Vector(x, y);
+                Animal a = this.map.makeLove(pos);
+                if (a != null) {
+                    this.map.addAnimal(a);
+                    List<Vector> neighbours = pos.getNeighbours();
+                    Collections.shuffle(neighbours);
+                    for (Vector pot : neighbours) {
+                        pot = pot.wrap(this.map.topRight);
+                        if (this.map.isEmpty(pot)) {
+                            a.move(pot);
+                            return;
+                        }
+                    }
+                    a.move(neighbours.get(0).wrap(this.map.topRight));
+                }
             }
         }
     }
@@ -142,4 +159,6 @@ public class Simulation {
     public int[] jungleSize() {
         return this.map.jungleSize();
     }
+
+    public boolean hasGenome(Vector pos, Genome genome) { return this.map.hasGenome(pos, genome); }
 }

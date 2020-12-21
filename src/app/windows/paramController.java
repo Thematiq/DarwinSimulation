@@ -7,11 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
-import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.json.simple.parser.ParseException;
@@ -27,26 +24,29 @@ import java.util.regex.Pattern;
  * @author Mateusz Praski
  */
 public class paramController implements Initializable {
-    private boolean single;
+    final String corrupt = "Error, couldn't read file";
+    final String error = "Error, not all fields are filled correctly";
 
     @FXML
-    private TextField widthText;
+    private Label labelError;
     @FXML
-    private TextField heightText;
+    private TextField textWidth;
     @FXML
-    private TextField energyText;
+    private TextField textHeight;
     @FXML
-    private TextField costText;
+    private TextField textEnergy;
     @FXML
-    private TextField plantText;
+    private TextField textCost;
     @FXML
-    private TextField jungleText;
+    private TextField textPlant;
     @FXML
-    private TextField startingText;
+    private TextField textJungle;
     @FXML
-    private RadioButton singleRadio;
+    private TextField textStarting;
     @FXML
-    private RadioButton doubleRadio;
+    private RadioButton radioSingle;
+    @FXML
+    private RadioButton radioDouble;
 
     private final Pattern numericPattern = Pattern.compile("^([1-9][0-9]*)?$");
     private final Pattern floatingPattern = Pattern.compile("^(0\\.?[0-9]*)?$");
@@ -68,88 +68,83 @@ public class paramController implements Initializable {
     }
 
     @FXML
-    private void singleSelected() {
-        this.single = true;
-    }
-
-    @FXML
-    private void doubleSelected() {
-        this.single = false;
-    }
-
-    @FXML
     void startSim() throws IOException {
         if (this.allParams()) {
-            if (this.single) {
+            if (this.radioSingle.isSelected()) {
                 this.spawnSimulationWindow("singleSimulation.fxml", this.scrapParams());
             } else {
                 this.spawnSimulationWindow("doubleSimulation.fxml", this.scrapParams());
             }
+        } else {
+            this.labelError.setText(this.error);
         }
     }
 
     @FXML
     void readFile() {
         try {
-            Stage currentStage = (Stage) this.startingText.getScene().getWindow();
+            Stage currentStage = (Stage) this.textStarting.getScene().getWindow();
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Choose parameters JSON file");
             fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("JSON files", "*.json"));
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
             String path = fileChooser.showOpenDialog(currentStage).getPath();
             Parameters params = JSONIO.readParameters(path);
-            if (this.single) {
-                this.spawnSimulationWindow("singleSimulation.fxml", params);
+            if (params.startingAnimals <= params.width * params.height) {
+                if (this.radioSingle.isSelected()) {
+                    this.spawnSimulationWindow("singleSimulation.fxml", params);
+                } else {
+                    this.spawnSimulationWindow("doubleSimulation.fxml", params);
+                }
             } else {
-                this.spawnSimulationWindow("doubleSimulation.fxml", params);
+                this.labelError.setText(this.corrupt);
             }
         } catch (Error e) {
             System.out.println(e.getMessage());
-        } catch (ParseException | IOException e) {
-            e.printStackTrace();
+        } catch (ParseException | IOException | NullPointerException e) {
+            this.labelError.setText(this.corrupt);
         }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.widthText.setTextFormatter(new TextFormatter<>(this::numericChange));
-        this.heightText.setTextFormatter(new TextFormatter<>(this::numericChange));
-        this.energyText.setTextFormatter(new TextFormatter<>(this::numericChange));
-        this.costText.setTextFormatter(new TextFormatter<>(this::numericChange));
-        this.plantText.setTextFormatter(new TextFormatter<>(this::numericChange));
-        this.startingText.setTextFormatter(new TextFormatter<>(this::numericChange));
-        this.jungleText.setTextFormatter(new TextFormatter<>(this::floatingChange));
+        this.textWidth.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.textHeight.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.textEnergy.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.textCost.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.textPlant.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.textStarting.setTextFormatter(new TextFormatter<>(this::numericChange));
+        this.textJungle.setTextFormatter(new TextFormatter<>(this::floatingChange));
 
-        this.single = true;
         ToggleGroup simulationGroup = new ToggleGroup();
-        this.singleRadio.setToggleGroup(simulationGroup);
-        this.doubleRadio.setToggleGroup(simulationGroup);
-        this.singleRadio.setSelected(true);
+        this.radioSingle.setToggleGroup(simulationGroup);
+        this.radioDouble.setToggleGroup(simulationGroup);
+        this.radioSingle.setSelected(true);
     }
 
     private Parameters scrapParams() {
-        int width = Integer.parseInt(this.widthText.getText());
-        int height = Integer.parseInt(this.heightText.getText());
-        int startEnergy = Integer.parseInt(this.energyText.getText());
-        int moveEnergy = Integer.parseInt(this.costText.getText());
-        int plantEnergy = Integer.parseInt(this.plantText.getText());
-        int startingAnimals = Integer.parseInt(this.startingText.getText());
-        float jungleRation = Float.parseFloat(this.jungleText.getText());
+        int width = Integer.parseInt(this.textWidth.getText());
+        int height = Integer.parseInt(this.textHeight.getText());
+        int startEnergy = Integer.parseInt(this.textEnergy.getText());
+        int moveEnergy = Integer.parseInt(this.textCost.getText());
+        int plantEnergy = Integer.parseInt(this.textPlant.getText());
+        int startingAnimals = Integer.parseInt(this.textStarting.getText());
+        float jungleRation = Float.parseFloat(this.textJungle.getText());
         return new Parameters(width, height, startEnergy, moveEnergy, plantEnergy, jungleRation, startingAnimals);
     }
 
     private boolean allParams() {
         TextField[] textFields = new TextField[]{
-                this.widthText, this.heightText, this.energyText, this.costText,
-                this.plantText, this.startingText, this.jungleText
+                this.textWidth, this.textHeight, this.textEnergy, this.textCost,
+                this.textPlant, this.textStarting, this.textJungle
         };
         for (TextField t : textFields) {
             if (t.getText().equals("")) {
                 return false;
             }
         }
-        return this.jungleText.getText().charAt(this.jungleText.getText().length() - 1) != '.' &&
-                Integer.parseInt(this.startingText.getText()) <= Integer.parseInt(this.widthText.getText()) * Integer.parseInt(this.heightText.getText());
+        return this.textJungle.getText().charAt(this.textJungle.getText().length() - 1) != '.' &&
+                Integer.parseInt(this.textStarting.getText()) <= Integer.parseInt(this.textWidth.getText()) * Integer.parseInt(this.textHeight.getText());
     }
 
     /**
@@ -158,7 +153,7 @@ public class paramController implements Initializable {
      * @param params Simulation params
      */
     private void spawnSimulationWindow(String window, Parameters params) throws IOException {
-        Stage currentStage = (Stage) this.startingText.getScene().getWindow();
+        Stage currentStage = (Stage) this.textStarting.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource(window));
         Parent root = loader.load();
         Scene scene = new Scene(root);

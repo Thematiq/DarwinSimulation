@@ -96,7 +96,7 @@ public abstract class AbstractSimulatorController implements IObserverSimulation
                 }
                 an = sim.animalAt(new Vector(x,y));
                 if (an != null) {
-                    this.drawAnimal(gc, an, an.getGenes().equals(dom));
+                    this.drawAnimal(gc, an, sim.hasGenome(an.getPos(), dom));
                 }
             }
         }

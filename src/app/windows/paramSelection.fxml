@@ -31,20 +31,21 @@
             </font>
         </Label>
         <Label layoutX="14.0" layoutY="99.0" text="Map width:" />
-        <TextField fx:id="widthText" layoutX="135.0" layoutY="95.0" />
-        <TextField fx:id="heightText" layoutX="135.0" layoutY="126.0" />
-        <TextField fx:id="energyText" layoutX="135.0" layoutY="158.0" />
+        <TextField fx:id="textWidth" layoutX="135.0" layoutY="95.0" />
+        <TextField fx:id="textHeight" layoutX="135.0" layoutY="126.0" />
+        <TextField fx:id="textEnergy" layoutX="135.0" layoutY="158.0" />
         <Label layoutX="14.0" layoutY="130.0" text="Map height:" />
         <Label layoutX="14.0" layoutY="162.0" text="Starting energy:" />
-        <TextField fx:id="costText" layoutX="135.0" layoutY="191.0" />
-        <TextField fx:id="plantText" layoutX="135.0" layoutY="223.0" />
-        <TextField fx:id="jungleText" layoutX="135.0" layoutY="255.0" />
+        <TextField fx:id="textCost" layoutX="135.0" layoutY="191.0" />
+        <TextField fx:id="textPlant" layoutX="135.0" layoutY="223.0" />
+        <TextField fx:id="textJungle" layoutX="135.0" layoutY="255.0" />
         <Label layoutX="13.0" layoutY="195.0" text="Move cost:" />
         <Label layoutX="14.0" layoutY="226.0" text="Plant energy:" />
         <Label layoutX="15.0" layoutY="259.0" text="Jungle ratio:" />
-        <TextField fx:id="startingText" layoutX="135.0" layoutY="287.0" />
+        <TextField fx:id="textStarting" layoutX="135.0" layoutY="287.0" />
         <Label layoutX="14.0" layoutY="291.0" text="Starting animals:" />
-        <RadioButton fx:id="singleRadio" layoutX="18.0" layoutY="343.0" mnemonicParsing="false" onAction="#singleSelected" text="Single simulation" />
-        <RadioButton fx:id="doubleRadio" layoutX="158.0" layoutY="343.0" mnemonicParsing="false" onAction="#doubleSelected" text="Double simulation" />
+        <RadioButton fx:id="radioSingle" layoutX="18.0" layoutY="343.0" mnemonicParsing="false" text="Single simulation" />
+        <RadioButton fx:id="radioDouble" layoutX="158.0" layoutY="343.0" mnemonicParsing="false" text="Double simulation" />
+      <Label fx:id="labelError" layoutX="13.0" layoutY="392.0" prefHeight="17.0" prefWidth="270.0" textAlignment="CENTER" />
     </AnchorPane>
 </VBox>

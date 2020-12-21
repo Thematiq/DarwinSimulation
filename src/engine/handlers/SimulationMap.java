@@ -6,6 +6,7 @@ import engine.objects.Herd;
 import engine.observers.IObserverKilled;
 import engine.observers.IObserverPositionChanged;
 import engine.tools.Generators;
+import engine.tools.Genome;
 import engine.tools.Parameters;
 import engine.tools.Vector;
 
@@ -23,8 +24,8 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     final Vector topRight;
     private final Random rand = new Random();
     private final Map<Vector, Grass> bushes = new HashMap<>();
+    private final Map<Vector, Herd> herdsTable = new HashMap<>();
     private final List<Animal> animalList = new ArrayList<>();
-    private final Herd[][] herdsTable;
 
     private int livingAnimals = 0;
     private int deadAnimals = 0;
@@ -38,14 +39,12 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     public SimulationMap(Parameters params) {
         this.params = params;
         this.topRight = new Vector(params.width-1, params.height-1);
-        this.herdsTable = new Herd[params.width][params.height];
-        for(int x = 0; x < params.width; ++x) {
-            for(int y = 0; y < params.height; ++y) {
-                this.herdsTable[x][y] = new Herd(this.params);
+        double jungleRatio = Math.sqrt(params.jungleRatio);
+        for (int x = 0; x < params.width; ++x) {
+            for (int y = 0; y < params.height; ++y) {
+                this.herdsTable.put(new Vector(x, y), new Herd(params));
             }
         }
-
-        double jungleRatio = Math.sqrt(params.jungleRatio);
 
         int jungleWidth = (int)(params.width * jungleRatio);
         int jungleHeight = (int)(params.height * jungleRatio);
@@ -80,7 +79,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
      * @param pos Grass position
      */
     public void eatGrass(Vector pos) {
-        if (this.herdsTable[pos.x][pos.y].eatGrass()) {
+        if (this.herdsTable.get(pos).eatGrass()) {
             if(this.isJungle(pos)) {
                 this.jungleBushes--;
             } else {
@@ -101,30 +100,11 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
         this.livingAnimals++;
         a.addPositionObserver(this);
         a.addKilledObserver(this);
-        this.herdsTable[a.getX()][a.getY()].addAnimal(a);
+        this.herdsTable.get(a.getPos()).addAnimal(a);
         this.animalList.add(a);
     }
 
-    /**
-     * Sends signal to the herd on a given tile to breed, and setups new animal
-     * @param pos Position
-     */
-    public void makeLove(Vector pos) {
-        Animal a = this.herdsTable[pos.x][pos.y].makeLove();
-        this.addAnimal(a);
-        if (a != null) {
-            List<Vector> neighbours = pos.getNeighbours();
-            Collections.shuffle(neighbours);
-            for (Vector pot : neighbours) {
-                pot = pot.wrap(this.topRight);
-                if (this.isEmpty(pot)) {
-                    a.move(pot);
-                    return;
-                }
-            }
-            a.move(neighbours.get(0).wrap(this.topRight));
-        }
-    }
+    public Animal makeLove(Vector pos) { return this.herdsTable.get(pos).makeLove(); }
 
     /**
      * Generates list of available tiles, then choose one from each land type
@@ -192,8 +172,8 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
 
     @Override
     public void positionChanged(Vector oldPos, Vector newPos, Animal caller) {
-        this.herdsTable[oldPos.x][oldPos.y].removeAnimal(caller);
-        this.herdsTable[newPos.x][newPos.y].addAnimal(caller);
+        this.herdsTable.get(oldPos).removeAnimal(caller);
+        this.herdsTable.get(newPos).addAnimal(caller);
     }
 
     @Override
@@ -204,7 +184,7 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     }
 
     public Animal animalAt(Vector pos) {
-        return this.herdsTable[pos.x][pos.y].getAnimal();
+        return this.herdsTable.get(pos).getAnimal();
     }
 
     public boolean isJungle(Vector pos) {
@@ -251,4 +231,6 @@ public class SimulationMap implements IObserverPositionChanged, IObserverKilled 
     public int getMaxX() { return this.topRight.x; }
 
     public int getMaxY() { return this.topRight.y; }
+
+    public boolean hasGenome(Vector pos, Genome genome) { return this.herdsTable.get(pos).hasGenome(genome); }
 }

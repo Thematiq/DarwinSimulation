@@ -2,6 +2,7 @@ package engine.objects;
 
 import engine.observers.IObserverEnergyChanged;
 import engine.observers.IObserverKilled;
+import engine.tools.Genome;
 import engine.tools.Parameters;
 
 import java.util.*;
@@ -158,5 +159,20 @@ public class Herd implements IObserverKilled, IObserverEnergyChanged {
         this.animals.computeIfAbsent(caller.getEnergy(), t -> new ArrayList<>());
         this.animals.get(caller.getEnergy()).add(caller);
         this.energies.add(caller.getEnergy());
+    }
+
+    /**
+     * @param genome Dominant genome
+     * @return True if any Animal has dominant genome
+     */
+    public boolean hasGenome(Genome genome) {
+        for(List<Animal> animals : this.animals.values()) {
+            for(Animal a : animals) {
+                if (a.getGenes().equals(genome)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
